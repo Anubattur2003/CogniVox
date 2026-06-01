@@ -14,6 +14,18 @@ This is the new modular version. To use the orchestrator as a module:
 import sys
 from pathlib import Path
 
+# Force stdout/stderr to use UTF-8 encoding (prevents crashes when printing emojis on Windows consoles)
+if hasattr(sys.stdout, 'reconfigure'):
+    try:
+        sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+    except Exception:
+        pass
+if hasattr(sys.stderr, 'reconfigure'):
+    try:
+        sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+    except Exception:
+        pass
+
 # Add the current directory to the path to allow importing orchestrator
 current_dir = Path(__file__).parent
 sys.path.insert(0, str(current_dir))
