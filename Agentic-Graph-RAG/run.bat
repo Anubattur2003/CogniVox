@@ -1,0 +1,3 @@
+@echo off
+echo Starting CogniVox Agentic Graph RAG Application...
+python run.py --auto-port %* 

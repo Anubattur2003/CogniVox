@@ -1,0 +1,123 @@
+[
+    {
+      "question": "What is the primary purpose of the Cyber Security Policy?",
+      "answer": "To maintain a secure and resilient cyber environment and ensure mandatory compliance by all employees, consultants, and third parties."
+    },
+    {
+      "question": "Who approves the Cyber Security Policy?",
+      "answer": "Narendra LSS"
+    },
+    {
+      "question": "Which department owns the Cyber Security Policy?",
+      "answer": "Human Resources Department"
+    },
+    {
+      "question": "What is the principle followed in Access Control Policies?",
+      "answer": "The principle of least privilege."
+    },
+    {
+      "question": "What encryption requirement is mentioned in the Data Protection policy?",
+      "answer": "Sensitive data must be encrypted both at rest and in transit."
+    },
+    {
+      "question": "Who is responsible for enforcing access controls in the company?",
+      "answer": "The IT Department"
+    },
+    {
+      "question": "What is required from employees regarding suspicious activity?",
+      "answer": "Employees must report any suspicious activities or security incidents promptly."
+    },
+    {
+      "question": "How is physical security managed according to the Cyber Security Policy?",
+      "answer": "Access is restricted to authorized personnel, and visitor access is monitored and controlled."
+    },
+    {
+      "question": "What is the scope of the Cyber Security Policy?",
+      "answer": "It covers all digital assets owned, operated, or managed by C2C AS and all activities within the company's network."
+    },
+    {
+      "question": "What training requirement is stated in the Cyber Security Policy?",
+      "answer": "Regular cyber security training and awareness programs must be provided to employees."
+    },
+    {
+      "question": "Who is eligible for referral bonuses in the Employee Referral Programme?",
+      "answer": "All employees except HR, Senior Management, Hiring Managers, and panelists involved in selection."
+    },
+    {
+      "question": "When did the Employee Referral Programme become effective?",
+      "answer": "April 02, 2022"
+    },
+    {
+      "question": "What is the referral bonus for a candidate with more than 12 years of experience?",
+      "answer": "Rs.75,000/-"
+    },
+    {
+      "question": "Are contract employees eligible to participate in the referral scheme?",
+      "answer": "No, contract employees are not eligible."
+    },
+    {
+      "question": "What is the condition for disbursing the referral bonus?",
+      "answer": "The referred candidate must complete at least 90 days with the company."
+    },
+    {
+      "question": "Can employees refer candidates who were interviewed within the last six months?",
+      "answer": "No, such referrals are not eligible."
+    },
+    {
+      "question": "What is the total number of annual leaves an employee is entitled to?",
+      "answer": "27 days"
+    },
+    {
+      "question": "How many maternity leaves are allowed during an employee’s tenure?",
+      "answer": "Maximum two times"
+    },
+    {
+      "question": "What is the duration of paternity leave?",
+      "answer": "3 days"
+    },
+    {
+      "question": "What is the leave policy for bereavement?",
+      "answer": "3 days of paid leave effective from the date of bereavement."
+    },
+    {
+      "question": "What is the maximum number of days leave that can be carried forward to the next year?",
+      "answer": "8 days"
+    },
+    {
+      "question": "What happens to accumulated leaves upon cessation of employment?",
+      "answer": "All accumulated leaves will be lapsed and not encashed."
+    },
+    {
+      "question": "What is the procedure to avail leave?",
+      "answer": "Apply through HRMS and get manager approval before submission to HR."
+    },
+    {
+      "question": "What is the boarding allowance for Grade A employees in Delhi?",
+      "answer": "Rs. 750"
+    },
+    {
+      "question": "What is the lodging allowance for Grade D employees in Hyderabad?",
+      "answer": "Rs. 1750"
+    },
+    {
+      "question": "What refreshment allowance is allowed on low-cost carrier night flights?",
+      "answer": "Rs. 350"
+    },
+    {
+      "question": "Who should approve all travel plans?",
+      "answer": "COO or Functional Head"
+    },
+    {
+      "question": "How soon should travel expenses be settled after return?",
+      "answer": "Within 7 days"
+    },
+    {
+      "question": "What are the disciplinary actions listed in the travel policy?",
+      "answer": "Verbal Warning, Written Warning, Dismissal from assignment or service."
+    },
+    {
+      "question": "What documents are required to claim travel reimbursements?",
+      "answer": "A tour report and all relevant bills or vouchers."
+    }
+  ]
+  

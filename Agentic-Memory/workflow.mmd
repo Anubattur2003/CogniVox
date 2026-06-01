@@ -1,0 +1,106 @@
+graph TB
+    %% Client interaction
+    Client("Client/User") -->|HTTP Request| API["FastAPI Server"]
+
+    %% Main API routes
+    API --> Health["Health Check"]
+    API --> ChatEndpoint["Chat Endpoint"]
+    API --> HistoryEndpoint["History Endpoint"]
+    API --> DeleteEndpoint["Delete History Endpoint"]
+
+    %% Health check flow
+    Health --> MongoDB[(MongoDB Health Check)]
+    Health --> Ollama[Ollama LLM Check]
+
+    %% Chat processing flow
+    ChatEndpoint --> ValidationAgent[Query Validation Agent]
+    ValidationAgent -->|Valid query| StoreUserMessage[Store User Message]
+    ValidationAgent -->|Invalid query| ErrorResponse[Error Response]
+
+    %% Memory operations
+    StoreUserMessage --> MemoryAgent[Memory Agent]
+    MemoryAgent -->|Decision| L0Memory[(L0 Memory<br/>RAM Cache)]
+    MemoryAgent -->|Decision| L2Memory[(L2 Memory<br/>MongoDB)]
+
+    %% Context gathering
+    StoreUserMessage --> ContextRetrieval[Retrieve Relevant Context]
+    ContextRetrieval --> MemoryAgent
+    ContextRetrieval --> ProfileExtraction[Extract Personal Information]
+
+    %% Query processing
+    StoreUserMessage --> IntentClassifier[Intent Classification]
+    StoreUserMessage --> QueryExpander[Query Expansion]
+
+    %% Response generation
+    IntentClassifier --> ResponseGeneration[Response Generation]
+    QueryExpander --> ResponseGeneration
+    ContextRetrieval --> ResponseGeneration
+    ProfileExtraction --> ResponseGeneration
+
+    %% Response variants
+    ResponseGeneration --> DetailedResponse[Detailed Response]
+    ResponseGeneration --> SummaryResponse[Summary Response]
+
+    %% Store response
+    DetailedResponse --> StoreResponse[Store Response]
+    SummaryResponse --> StoreResponse
+    StoreResponse --> MemoryAgent
+
+    %% Final API response
+    StoreResponse --> APIResponse[API Response]
+    APIResponse --> Client
+
+    %% History operations
+    HistoryEndpoint --> MemoryAgent
+    DeleteEndpoint --> MemoryAgent
+
+    %% Agent system subgraph
+    subgraph "Agent System"
+        ValidationAgent
+        IntentClassifier
+        QueryExpander
+        ResponseGeneration
+    end
+
+    %% Memory system subgraph
+    subgraph "Memory System"
+        MemoryAgent
+        L0Memory
+        L2Memory
+        MemoryManager[Memory Manager]
+        MemoryAgent --> MemoryManager
+        MemoryManager --> L0Memory
+        MemoryManager --> L2Memory
+    end
+
+    %% Context management subgraph
+    subgraph "Context Management"
+        ContextRetrieval
+        ProfileExtraction
+        StoreUserMessage
+        StoreResponse
+    end
+
+    %% Memory operations details
+    subgraph "Memory Operations"
+        StoreOp[Store Operation]
+        RetrieveOp[Retrieve Operation]
+        DeleteOp[Delete Operation]
+        UpdateOp[Update Operation]
+        
+        MemoryAgent --> StoreOp
+        MemoryAgent --> RetrieveOp
+        MemoryAgent --> DeleteOp
+        MemoryAgent --> UpdateOp
+    end
+
+    %% Failure handling
+    subgraph "Fault Tolerance"
+        MongoDBFailure[MongoDB Failure]
+        OllamaFailure[Ollama LLM Failure]
+        FallbackMemory[In-Memory Fallback]
+        DefaultResponses[Default Responses]
+
+        MongoDBFailure --> FallbackMemory
+        OllamaFailure --> DefaultResponses
+    end

@@ -1,0 +1,23 @@
+# GCP Cloud Storage PDF Pipeline Configuration
+gcp:
+  project_id: "abiding-team-450910-j4"
+  credentials_path: "../Credientials/abiding-team-450910-j4-189c4652faed.json"
+  
+storage:
+  bucket_name: "cognivox-pdf-storage"
+  default_location: "US"
+  storage_class: "STANDARD"
+  
+directories:
+  default_upload_folder: "documents"
+  local_upload_dir: "uploads"
+  local_download_dir: "downloads"
+  temp_dir: "temp"
+  backup_dir: "backups"
+
+pdf:
+  allowed_extensions: [".pdf"]
+  max_file_size_mb: 100
+  enable_validation: true
+  enable_metadata_extraction: true
+            

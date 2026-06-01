@@ -1,0 +1,47 @@
+# CogniVox Backend Configuration
+
+# Basic app settings
+app:
+  name: "CogniVox"
+  environment: "development"
+  debug: true
+  secret_key: "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
+
+# Database settings
+database:
+  url: "postgresql://postgres:password@localhost:5432/cognivox_v1"
+
+# Server settings
+server:
+  host: "0.0.0.0"
+  port: 8000
+  allowed_hosts: "*"  # Allow all origins - for development
+
+# Email settings
+email:
+  host: "sandeep.m@c2c-as.com"
+  port: 587
+  user: "sandeep.m@c2c-as.com"
+  password: "your-email-password-here"
+  use_tls: true
+
+# JWT settings
+jwt:
+  secret_key: "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
+  algorithm: "HS256"
+  token_expiry_minutes: 60
+
+# MongoDB settings (Development - With Auth)
+mongodb:
+  url: "mongodb://appuser:apppassword@localhost:27017/appdb"
+  db_name: "appdb"
+
+# Additional settings
+additional:
+  max_sub_threads: 10
+  ollama_url: "http://localhost:11434"
+
+# Model settings
+model:
+  default_name: "qwen3:4b"
+  default_requests: 100

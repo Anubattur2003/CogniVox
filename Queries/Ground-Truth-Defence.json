@@ -1,0 +1,123 @@
+[
+    {
+      "question": "Which ship is associated with all the defect reports?",
+      "answer": "INS Bagh"
+    },
+    {
+      "question": "What is the department involved in all the reports?",
+      "answer": "Electrical"
+    },
+    {
+      "question": "What is the common system category across all reports?",
+      "answer": "Communication Systems"
+    },
+    {
+      "question": "What is the sub-system mentioned in Report 076?",
+      "answer": "Antenna"
+    },
+    {
+      "question": "What caused the high VSWR in the antenna system?",
+      "answer": "Corrosion of the antenna"
+    },
+    {
+      "question": "Which tools and materials were used to fix the antenna issue in INS Bagh?",
+      "answer": "Wire brush, sandpaper, conductive epoxy, corrosion-resistant primer"
+    },
+    {
+      "question": "Which date did the antenna defect occur?",
+      "answer": "15/04/2024"
+    },
+    {
+      "question": "What test was used to confirm antenna functionality?",
+      "answer": "Measurement of antenna gain, VSWR, and signal strength"
+    },
+    {
+      "question": "What was the cause of the power supply failure in Report 077?",
+      "answer": "Defective battery"
+    },
+    {
+      "question": "What was the resolution to the power supply issue?",
+      "answer": "Replacement with functional batteries"
+    },
+    {
+      "question": "What spare part was used in Report 077?",
+      "answer": "Batteries"
+    },
+    {
+      "question": "When was the power supply defect resolved?",
+      "answer": "08/05/2024"
+    },
+    {
+      "question": "What was the defect observed in the transmitter in Report 078?",
+      "answer": "Reduced transmission range"
+    },
+    {
+      "question": "What was the root cause of the transmitter issue?",
+      "answer": "Overheating of components"
+    },
+    {
+      "question": "Which components were replaced in the transmitter?",
+      "answer": "Capacitors, resistors"
+    },
+    {
+      "question": "When was the transmitter defect resolved?",
+      "answer": "15/08/2024"
+    },
+    {
+      "question": "What was the issue with the transmitter software module in Report 079?",
+      "answer": "System was not transmitting due to software malfunction"
+    },
+    {
+      "question": "What step resolved the software module defect?",
+      "answer": "Reloading the software module and performing BITE checks"
+    },
+    {
+      "question": "What does BITE stand for in the context of Report 079?",
+      "answer": "Built-In Test Equipment"
+    },
+    {
+      "question": "When did the software module defect occur?",
+      "answer": "05/04/2024"
+    },
+    {
+      "question": "What caused the excessive heating in the cooling system (Report 080)?",
+      "answer": "Improper valve and coolant pressure in the cooling system"
+    },
+    {
+      "question": "How was the cooling system defect resolved?",
+      "answer": "Valve was changed and coolant pressure was regulated"
+    },
+    {
+      "question": "Which spare part was used in fixing the cooling system?",
+      "answer": "Valve"
+    },
+    {
+      "question": "What test confirmed the cooling system issue was resolved?",
+      "answer": "Post-repair check showed no abnormal heating"
+    },
+    {
+      "question": "Who is consistently involved across all defect resolutions?",
+      "answer": "Sona, Senior Foreman, Repair Unit 3"
+    },
+    {
+      "question": "Who is the HSK 1 involved in all reports?",
+      "answer": "Arun"
+    },
+    {
+      "question": "Which OEM is listed in all reports?",
+      "answer": "CCC"
+    },
+    {
+      "question": "What is the Unique Identification Code in Report 078?",
+      "answer": "11178"
+    },
+    {
+      "question": "What subsystem had a software-related issue?",
+      "answer": "Transmitter Software Module"
+    },
+    {
+      "question": "What was the duration to resolve the cooling system defect?",
+      "answer": "5 days (from 08/08/2024 to 13/08/2024)"
+    }
+  ]
+  

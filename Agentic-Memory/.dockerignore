@@ -1,0 +1,55 @@
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.env
+.venv
+.coverage
+htmlcov/
+.tox/
+.nox/
+.coverage.*
+
+# Editor directories and files
+.idea
+.vscode
+*.swp
+*.swo
+*~
+
+# Logs
+logs/
+*.log
+
+# Docker
+.dockerignore
+Dockerfile
+
+# Node modules
+node_modules/
+
+# Testing
+test-*
+tests/
+
+# Data
+data/
+
+# Documentation
+docs/
+README.md
+CHANGELOG.md
+LICENSE
+
+# Misc
+.DS_Store
+Thumbs.db 

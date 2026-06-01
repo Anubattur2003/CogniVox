@@ -1,0 +1,1 @@
+ollama_chat_system_prompt = "You are a helpful AI Assistant. Answer the User's queries succinctly in one sentence." 

@@ -1,0 +1,1 @@
+# Core module for system configuration and utilities

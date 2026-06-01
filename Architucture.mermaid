@@ -1,0 +1,150 @@
+graph TB
+    %% User Interface Layer
+    subgraph "User Interface Layer"
+        UI[React Frontend]
+        FU[File Upload Component]
+        QI[Query Interface]
+        RD[Response Dashboard]
+    end
+
+    %% API Gateway Layer
+    subgraph "API Gateway Layer"
+        BK[Agentic Backend - FastAPI]
+        AUTH[Authentication Service]
+        CORS[CORS Handler]
+    end
+
+    %% Agentic Processing Layer
+    subgraph "Agentic Processing Layer"
+        subgraph "Memory Service"
+            REACT[Supervisor ReAct Agent]
+            QV[Query Validation Agent]
+            CTX[Context Awareness Agent]
+            PROF[Profile Extraction Agent]
+            TG[Title Generation Agent]
+        end
+        
+        subgraph "Intelligence Layer"
+            IC[Intent Classification Agent]
+            QE[Query Expansion Agent]
+            DA[Document Analysis Agent]
+        end
+    end
+
+    %% Knowledge Processing Layer
+    subgraph "Knowledge Processing Layer"
+        subgraph "Graph-RAG Service"
+            DOC[Document Processor - LlamaIndex]
+            EMB[Embeddings Generator]
+            VEC[Vector Search Engine]
+            GRAPH[Graph Query Engine]
+            HYBRID[Hybrid Search Coordinator]
+        end
+        
+        subgraph "Parallel Execution"
+            SEM[Semantic Search]
+            KEY[Keyword Search]
+            USR[User-Specific Search]
+            GLB[Global Search]
+        end
+    end
+
+    %% Storage Layer
+    subgraph "Storage Layer"
+        subgraph "Relational Database"
+            PG[(PostgreSQL)]
+            PG_USER[User Management]
+            PG_AUTH[Authentication Data]
+            PG_META[Document Metadata]
+        end
+        
+        subgraph "Document Storage"
+            GCP[GCP Cloud Storage]
+            GCP_DOCS[Document Repository]
+        end
+        
+        subgraph "Vector Database"
+            CHROMA[(ChromaDB)]
+            CHROMA_EMB[Document Embeddings]
+            CHROMA_SEARCH[Vector Search Index]
+        end
+        
+        subgraph "Graph Database"
+            NEO4J[(Neo4j)]
+            NEO4J_KB[Knowledge Graph]
+            NEO4J_REL[Entity Relationships]
+        end
+        
+        subgraph "Cache Layer"
+            MONGO[(MongoDB)]
+            SQLITE[(SQLite)]
+            MONGO_CHAT[Chat History]
+            SQLITE_CACHE[Local Cache]
+        end
+    end
+
+    %% External Services
+    subgraph "External Services"
+        OLLAMA[Ollama LLM Models]
+        LLAMA[LlamaIndex Processing]
+    end
+
+    %% Document Ingestion Flow
+    UI -->|Document Upload| FU
+    FU -->|POST /ingest| BK
+    BK -->|Authentication| AUTH
+    BK -->|Process Document| DOC
+    DOC -->|LlamaIndex| LLAMA
+    DOC -->|Extract Text| EMB
+    EMB -->|Generate Embeddings| CHROMA
+    DOC -->|Store Document| GCP
+    DOC -->|Create Graph| NEO4J
+    BK -->|Store Metadata| PG
+
+    %% Query Processing Flow
+    UI -->|User Query| QI
+    QI -->|POST /api/chat| BK
+    BK -->|Forward Query| REACT
+    REACT -->|Validate| QV
+    QV -->|Process| OLLAMA
+    REACT -->|Expand Query| QE
+    QE -->|Classify Intent| IC
+    REACT -->|Search Knowledge| HYBRID
+    
+    %% Parallel Search Execution
+    HYBRID -->|Parallel Execution| SEM
+    HYBRID -->|Parallel Execution| KEY
+    SEM -->|Vector Search| CHROMA
+    KEY -->|Graph Search| NEO4J
+    SEM -->|User Context| USR
+    KEY -->|Global Context| GLB
+    
+    %% Context and Memory
+    REACT -->|Get Context| CTX
+    CTX -->|Chat History| MONGO
+    CTX -->|Fallback Cache| SQLITE
+    REACT -->|Profile Data| PROF
+    PROF -->|User Data| PG
+
+    %% Response Flow
+    HYBRID -->|Aggregated Results| REACT
+    REACT -->|Generate Response| OLLAMA
+    REACT -->|Create Title| TG
+    TG -->|Store Interaction| MONGO
+    REACT -->|Response| BK
+    BK -->|Formatted Response| RD
+
+    %% Styling
+    classDef uiLayer fill:#e1f5fe
+    classDef apiLayer fill:#f3e5f5
+    classDef agenticLayer fill:#fff3e0
+    classDef knowledgeLayer fill:#e8f5e8
+    classDef storageLayer fill:#fce4ec
+    classDef externalLayer fill:#f1f8e9
+
+    class UI,FU,QI,RD uiLayer
+    class BK,AUTH,CORS apiLayer
+    class REACT,QV,CTX,PROF,TG,IC,QE,DA agenticLayer
+    class DOC,EMB,VEC,GRAPH,HYBRID,SEM,KEY,USR,GLB knowledgeLayer
+    class PG,GCP,CHROMA,NEO4J,MONGO,SQLITE,PG_USER,PG_AUTH,PG_META,GCP_DOCS,CHROMA_EMB,CHROMA_SEARCH,NEO4J_KB,NEO4J_REL,MONGO_CHAT,SQLITE_CACHE storageLayer
+    class OLLAMA,LLAMA externalLayer

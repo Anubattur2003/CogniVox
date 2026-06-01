@@ -1,0 +1,37 @@
+flowchart TB
+    %% UI Layer
+    UI[User Interface Layer<br/>React: Upload, Query, Results]
+
+    %% API Gateway Layer
+    API[API Gateway FastAPI: Routing, Auth, CORS]
+
+    %% Simplified Agentic Orchestration Layer
+    subgraph AGENT_ORCH [   ]
+        A[Request Handler]
+        B[Supervisor ReAct Agent<br/>Reasoning & Acting]
+        C[Analysis Agents]
+        D[Knowledge Retrieval]
+        E[Response Generator]
+
+        %% Simplified Flow
+        A --> B
+        B --> C
+        C --> D
+        D --> E
+        E --> B
+    end
+
+    %% Main System Components
+    AGENTS[Agent Services<br/>Intent, Context, Profile, Query Processing]
+    KNOWLEDGE[Knowledge Layer<br/>Vector & Graph Search, Document Processing]
+    STORAGE[Storage Layer<br/>Databases & Document Storage]
+    EXTERNAL[External AI Services<br/>LLM Models]
+
+    %% Main Flow Connections
+    UI --> API
+    API --> A
+    B --> API
+    C --> AGENTS
+    D --> KNOWLEDGE
+    D --> EXTERNAL
+    KNOWLEDGE --> STORAGE

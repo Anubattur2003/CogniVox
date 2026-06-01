@@ -1,0 +1,71 @@
+# Project-specific
+data/
+*.json
+*.pdf
+knowledge_graph*.html
+*.html
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Environments
+
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.env.bak*
+
+# OS specific
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IDE 
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Log files
+*.log
+.logs/
+logs/
+
+# Database files
+*.db
+
+# Image files
+*.png
+*.svg
+
+# Dependencies
+node_modules/ 

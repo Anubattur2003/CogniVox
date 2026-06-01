@@ -1,0 +1,191 @@
+services:
+
+  # =========================
+  # Neo4j Graph Database (GPU Enabled)
+  # =========================
+  neo4j:
+    image: neo4j:5.15
+    pull_policy: always
+    container_name: agentic-neo4j
+    runtime: nvidia
+
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+
+    environment:
+      - NEO4J_AUTH=${NEO4J_AUTH:-neo4j/password}
+      - NEO4J_dbms_memory_pagecache_size=2G
+      - NEO4J_dbms_memory_heap_initial__size=2G
+      - NEO4J_dbms_memory_heap_max__size=2G
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+
+    volumes:
+      - agentic_neo4j_data:/data
+      - agentic_neo4j_logs:/logs
+      - agentic_neo4j_plugins:/plugins
+
+    networks:
+      - agentic-network
+
+    restart: unless-stopped
+
+    healthcheck:
+      test: ["CMD", "cypher-shell", "-u", "neo4j", "-p", "password", "RETURN 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+
+  # =========================
+  # MongoDB Database (GPU Enabled)
+  # =========================
+  mongodb:
+    image: mongo:8.2.5
+    pull_policy: always
+    container_name: agentic-mongodb
+    runtime: nvidia
+    restart: always
+
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_ROOT_USERNAME:-appuser}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD:-apppassword}
+      - MONGO_APP_DATABASE=${MONGO_APP_DATABASE:-appdb}
+      - MONGO_APP_USER=${MONGO_APP_USER:-appuser}
+      - MONGO_APP_PASSWORD=${MONGO_APP_PASSWORD:-apppassword}
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+
+    command: ["mongod", "--bind_ip_all"]
+
+    ports:
+      - "${MONGO_PORT:-27017}:27017"
+
+    volumes:
+      - agentic_mongodb_data:/data/db
+      - agentic_mongodb_log:/data/log
+      - ./docker-config/mongodb-init:/docker-entrypoint-initdb.d
+
+    networks:
+      - agentic-network
+
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+
+  # =========================
+  # PostgreSQL Database (GPU Enabled)
+  # =========================
+  postgres:
+    container_name: agentic-postgres
+    image: postgres:14
+    pull_policy: always
+    runtime: nvidia
+    restart: always
+
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-cognivox}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-cognivox}
+      POSTGRES_DB: ${POSTGRES_DB:-cognivox}
+      NVIDIA_VISIBLE_DEVICES: all
+      NVIDIA_DRIVER_CAPABILITIES: compute,utility
+
+    volumes:
+      - agentic_postgres_data:/var/lib/postgresql/data
+      - ./docker-config/postgres-config/postgresql.conf:/etc/postgresql/postgresql.conf
+      - ./docker-config/postgres-config/pg_hba.conf:/etc/postgresql/pg_hba.conf
+
+    command: postgres -c config_file=/etc/postgresql/postgresql.conf -c hba_file=/etc/postgresql/pg_hba.conf
+
+    networks:
+      - agentic-network
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-cognivox}"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+
+  # =========================
+  # PgAdmin (GPU Enabled)
+  # =========================
+  pgadmin:
+    container_name: agentic-pgadmin
+    image: dpage/pgadmin4:8.14
+    pull_policy: always
+    runtime: nvidia
+    restart: always
+
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@admin.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION: "True"
+      PGADMIN_CONFIG_CONSOLE_LOG_LEVEL: 10
+      PGADMIN_CONFIG_SESSION_EXPIRATION_TIME: 60
+      NVIDIA_VISIBLE_DEVICES: all
+      NVIDIA_DRIVER_CAPABILITIES: compute,utility
+
+    volumes:
+      - agentic_pgadmin_data:/var/lib/pgadmin
+
+    networks:
+      - agentic-network
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80/misc/ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+
+# =========================
+# Volumes
+# =========================
+volumes:
+  agentic_neo4j_data:
+    name: agentic-neo4j-data
+
+  agentic_neo4j_logs:
+    name: agentic-neo4j-logs
+
+  agentic_neo4j_plugins:
+    name: agentic-neo4j-plugins
+
+  agentic_ollama:
+    name: agentic-ollama
+
+  agentic_mongodb_data:
+    name: agentic-mongodb-data
+
+  agentic_mongodb_log:
+    name: agentic-mongodb-log
+
+  agentic_postgres_data:
+    name: agentic-postgres-data
+
+  agentic_pgadmin_data:
+    name: agentic-pgadmin-data
+
+
+# =========================
+# Network
+# =========================
+networks:
+  agentic-network:
+    name: agentic-network
+    driver: bridge

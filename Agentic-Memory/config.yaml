@@ -1,0 +1,231 @@
+# CogniVox Agentic-Memory Configuration
+# This file contains configuration settings for all agents and services
+# It supports multiple LLM providers and can be used instead of .env files
+
+# Default LLM Configuration
+llm:
+  # Primary provider settings
+  default_provider: "ollama"  # Options: ollama, openai, anthropic, google, etc.
+  default_model: "qwen2.5:7b"
+  default_temperature: 0.7
+  default_timeout: 60  # Increased for larger models
+  
+  # Ollama specific configuration
+  ollama:
+    base_url: "http://localhost:11434/mistral"  # Nginx proxy running on 0.0.0.0:11434
+    api_path: "/api/chat"
+    
+    # Model-to-URL mapping for dedicated Ollama instances (nginx path-based routing)
+    # Format: "model_name": "base_url/path"
+    # Note: Model names with ':' and '.' are automatically converted to '-' for URL paths
+    model_urls:
+      "mistral:latest": "http://localhost:11434/mistral"
+      "qwen2.5:7b": "http://localhost:11434/qwen2-5-7b"
+      "gemma2:2b": "http://localhost:11434/gemma2-2b"
+      "nomic-embed-text": "http://localhost:11434/nomic-embed-text"  # For Graph-RAG embeddings
+      # Add more model-specific URLs as needed
+    
+    models:
+      - "mistral:latest"
+      - "qwen2.5:7b"
+      - "gemma2:2b"
+      - "llama3:8b"
+      - "codellama"
+    timeout: 60
+    keep_alive: "-1"  # Keep model loaded permanently in VRAM to prevent reload latency
+  
+  # OpenAI configuration
+  openai:
+    api_key: null  # Set via environment variable OPENAI_API_KEY or directly here
+    base_url: "https://api.openai.com/v1"
+    models:
+      - "gpt-4"
+      - "gpt-3.5-turbo"
+      - "gpt-4-turbo"
+    temperature: 0.7
+    max_tokens: 4096
+    timeout: 30
+  
+  # Anthropic configuration
+  anthropic:
+    api_key: null  # Set via environment variable ANTHROPIC_API_KEY or directly here
+    base_url: "https://api.anthropic.com"
+    models:
+      - "claude-3-sonnet-20240229"
+      - "claude-3-haiku-20240307"
+      - "claude-3-opus-20240229"
+    temperature: 0.7
+    max_tokens: 4096
+    timeout: 30
+  
+  # Google (Gemini) configuration
+  google:
+    api_key: null  # Set via environment variable GOOGLE_API_KEY or directly here
+    models:
+      - "gemini-2.0-flash"
+      - "gemini-pro"
+      - "gemini-pro-vision"
+    temperature: 0.7
+    max_tokens: 4096
+    timeout: 30
+
+# MongoDB settings (Corrected credentials)
+mongodb:
+  url: "mongodb://appuser:apppassword@localhost:27017/appdb"
+  db_name: "appdb"
+
+# Agent-specific configurations
+agents:
+  # Multi-Agent Orchestrator Configuration (OPTIMIZED)
+  query_analyzer:
+    provider: "ollama"
+    model: "qwen2.5:7b"  # Excellent reasoning, only ~4.7GB (fits RTX 3050 6GB)
+    temperature: 0.1
+    timeout: 60
+    
+  mcp_reasoning:
+    provider: "ollama"
+    model: "qwen2.5:7b"  # Same as query_analyzer to avoid model switching
+    temperature: 0.1
+    timeout: 60
+    
+  response_synthesizer:
+    provider: "ollama"
+    model: "qwen2.5:7b"  # Standardized to qwen2.5:7b to prevent VRAM swapping
+    temperature: 0.7
+    timeout: 30
+    
+  query_reasoning:
+    provider: "ollama"
+    model: "qwen2.5:7b"  # Strong reasoning for precise answer extraction
+    temperature: 0.2     # Low temperature for precision
+    timeout: 30
+    
+  validator:
+    enabled: false  # Disabled by default for speed (set to true for quality mode)
+    provider: "ollama"
+    model: "qwen2.5:7b"  # Standardized to qwen2.5:7b to prevent VRAM swapping
+    temperature: 0.1
+    timeout: 30
+ 
+  # Context Awareness Agent
+  context_awareness:
+    max_history_messages: 10
+    include_metadata: false
+  
+  # Context Relevance Agent
+  context_relevance:
+    provider: "ollama"
+    model: "qwen2.5:7b"
+    temperature: 0.2
+    use_gpu_similarity: true
+    max_relevant_items: 5
+    fallback_to_recent: true
+  
+  # Intent Classifier Agent
+  intent_classifier:
+    provider: "ollama"
+    model: "qwen2.5:7b"
+    temperature: 0.5
+    enable_schema_validation: true
+  
+  # Ollama Chat Agent
+  ollama_chat:
+    provider: "ollama"
+    model: "qwen2.5:7b"
+    temperature: 0.7
+    max_history_per_user: 50
+    system_prompt: "You are a helpful AI Assistant. Answer the User's queries succinctly in one sentence."
+  
+  # Profile Extraction Agent
+  profile_extraction:
+    provider: "ollama"
+    model: "qwen2.5:7b"
+    temperature: 0.2
+    max_history_items: 20
+    enable_rule_based_fallback: true
+  
+  # Query Expansion Agent
+  query_expansion:
+    provider: "ollama"
+    model: "qwen2.5:7b"
+    temperature: 0.7
+    max_expansion_length: 500
+  
+  # Query Validation Agent
+  query_validation:
+    provider: "ollama"
+    model: "qwen2.5:7b"
+    temperature: 0.3
+    timeout: 15
+    max_retries: 2
+    fail_closed: true
+
+  # Speech-to-Text Agent
+  speech_to_text:
+    provider: "ollama"
+    model: "dimavz/whisper-tiny"
+    temperature: 0.1
+    timeout: 60
+    max_file_size_mb: 25
+    supported_formats: [".wav", ".mp3", ".m4a", ".ogg", ".flac", ".webm"]
+    enable_post_processing: true
+    min_confidence_threshold: 0.7
+
+# Memory and Storage Configuration
+memory:
+  chat_memory:
+    max_messages_per_chat: 1000
+    cleanup_interval_hours: 24
+    enable_compression: true
+  
+  user_profiles:
+    enable_auto_update: true
+    max_profile_age_days: 90
+    enable_privacy_mode: false
+    
+  # MCP Capability Caching (NEW - Performance Optimization)
+  mcp_cache:
+    enabled: true
+    ttl_seconds: 300  # 5 minutes cache
+    max_cache_size: 100  # Max cached entries
+
+# GPU and Performance Configuration (RTX 3050 6GB)
+gpu:
+  enable_gpu_acceleration: true   # RTX 3050 GPU acceleration enabled
+  device_ids: [0]  # RTX 3050
+  fallback_to_cpu: true
+  memory_limit_gb: 6  # RTX 3050 has 6GB VRAM
+
+# API and Service Configuration
+api:
+  host: "0.0.0.0"
+  port: 8002
+  enable_cors: true
+  cors_origins: ["*"]
+  enable_docs: true
+  log_level: "INFO"
+
+# Logging Configuration
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file_path: "logs/agentic_memory.log"
+  max_file_size_mb: 100
+  backup_count: 5
+  enable_console: true
+
+# Security Configuration
+security:
+  enable_rate_limiting: true
+  max_requests_per_minute: 60
+  enable_input_validation: true
+  max_input_length: 10000
+  blocked_patterns: []
+
+# Development and Debug Configuration
+development:
+  debug_mode: false
+  enable_profiling: false
+  enable_metrics: true
+  metrics_endpoint: "/metrics" 

@@ -1,0 +1,455 @@
+[
+  {
+    "title": "Understanding React Hooks",
+    "resource": "https://reactjs.org/docs/hooks-intro.html",
+    "response": "This article provides a comprehensive overview of React Hooks.",
+    "relatedLinks": [
+      "https://reactjs.org/docs/hooks-overview.html",
+      "https://reactjs.org/docs/hooks-state.html"
+    ],
+    "subThreads": [
+      {
+        "title": "Understanding React Hooks - Part 1",
+        "resource": "https://reactjs.org/docs/hooks-intro.html#part-1",
+        "response": "This part covers the basics of React Hooks.",
+        "relatedLinks": [
+          "https://reactjs.org/docs/hooks-overview.html#part-1",
+          "https://reactjs.org/docs/hooks-state.html#part-1"
+        ]
+      },
+      {
+        "title": "Understanding React Hooks - Part 2",
+        "resource": "https://reactjs.org/docs/hooks-intro.html#part-2",
+        "response": "This part dives deeper into the use of Hooks.",
+        "relatedLinks": [
+          "https://reactjs.org/docs/hooks-overview.html#part-2",
+          "https://reactjs.org/docs/hooks-state.html#part-2"
+        ]
+      },
+      {
+        "title": "Understanding React Hooks - Part 3",
+        "resource": "https://reactjs.org/docs/hooks-intro.html#part-3",
+        "response": "This part discusses advanced Hooks usage.",
+        "relatedLinks": [
+          "https://reactjs.org/docs/hooks-overview.html#part-3",
+          "https://reactjs.org/docs/hooks-state.html#part-3"
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Getting Started with TypeScript",
+    "resource": "https://www.typescriptlang.org/docs/handbook/intro.html",
+    "response": "A beginner's guide to TypeScript.",
+    "relatedLinks": [
+      "https://www.typescriptlang.org/docs/handbook/basic-types.html",
+      "https://www.typescriptlang.org/docs/handbook/advanced-types.html"
+    ],
+    "subThreads": [
+      {
+        "title": "Getting Started with TypeScript - Part 1",
+        "resource": "https://www.typescriptlang.org/docs/handbook/intro.html#part-1",
+        "response": "This part introduces TypeScript basics.",
+        "relatedLinks": [
+          "https://www.typescriptlang.org/docs/handbook/basic-types.html#part-1",
+          "https://www.typescriptlang.org/docs/handbook/advanced-types.html#part-1"
+        ]
+      },
+      {
+        "title": "Getting Started with TypeScript - Part 2",
+        "resource": "https://www.typescriptlang.org/docs/handbook/intro.html#part-2",
+        "response": "This part covers TypeScript features.",
+        "relatedLinks": [
+          "https://www.typescriptlang.org/docs/handbook/basic-types.html#part-2",
+          "https://www.typescriptlang.org/docs/handbook/advanced-types.html#part-2"
+        ]
+      },
+      {
+        "title": "Getting Started with TypeScript - Part 3",
+        "resource": "https://www.typescriptlang.org/docs/handbook/intro.html#part-3",
+        "response": "This part discusses advanced TypeScript concepts.",
+        "relatedLinks": [
+          "https://www.typescriptlang.org/docs/handbook/basic-types.html#part-3",
+          "https://www.typescriptlang.org/docs/handbook/advanced-types.html#part-3"
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Exploring JavaScript ES6 Features",
+    "resource": "https://www.ecma-international.org/publications/standards/Ecma-262.htm",
+    "response": "An overview of the new features introduced in ES6.",
+    "relatedLinks": [
+      "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import",
+      "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes"
+    ],
+    "subThreads": [
+      {
+        "title": "Exploring JavaScript ES6 Features - Part 1",
+        "resource": "https://www.ecma-international.org/publications/standards/Ecma-262.htm#part-1",
+        "response": "This part covers the basics of ES6 features.",
+        "relatedLinks": [
+          "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import#part-1",
+          "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes#part-1"
+        ]
+      },
+      {
+        "title": "Exploring JavaScript ES6 Features - Part 2",
+        "resource": "https://www.ecma-international.org/publications/standards/Ecma-262.htm#part-2",
+        "response": "This part dives deeper into ES6 features.",
+        "relatedLinks": [
+          "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import#part-2",
+          "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes#part-2"
+        ]
+      },
+      {
+        "title": "Exploring JavaScript ES6 Features - Part 3",
+        "resource": "https://www.ecma-international.org/publications/standards/Ecma-262.htm#part-3",
+        "response": "This part discusses advanced ES6 features.",
+        "relatedLinks": [
+          "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import#part-3",
+          "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes#part-3"
+        ]
+      }
+    ]
+  },
+  {
+    "title": "CSS Grid Layout",
+    "resource": "https://css-tricks.com/snippets/css/complete-guide-grid/",
+    "response": "A complete guide to CSS Grid Layout.",
+    "relatedLinks": [
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout",
+      "https://css-tricks.com/snippets/css/complete-guide-grid/"
+    ],
+    "subThreads": [
+      {
+        "title": "CSS Grid Layout - Part 1",
+        "resource": "https://css-tricks.com/snippets/css/complete-guide-grid/#part-1",
+        "response": "This part covers the basics of CSS Grid Layout.",
+        "relatedLinks": [
+          "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout#part-1",
+          "https://css-tricks.com/snippets/css/complete-guide-grid/#part-1"
+        ]
+      },
+      {
+        "title": "CSS Grid Layout - Part 2",
+        "resource": "https://css-tricks.com/snippets/css/complete-guide-grid/#part-2",
+        "response": "This part dives deeper into CSS Grid Layout.",
+        "relatedLinks": [
+          "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout#part-2",
+          "https://css-tricks.com/snippets/css/complete-guide-grid/#part-2"
+        ]
+      },
+      {
+        "title": "CSS Grid Layout - Part 3",
+        "resource": "https://css-tricks.com/snippets/css/complete-guide-grid/#part-3",
+        "response": "This part discusses advanced CSS Grid Layout techniques.",
+        "relatedLinks": [
+          "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout#part-3",
+          "https://css-tricks.com/snippets/css/complete-guide-grid/#part-3"
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Introduction to Node.js",
+    "resource": "https://nodejs.org/en/docs/guides/getting-started-guide/",
+    "response": "A guide to getting started with Node.js.",
+    "relatedLinks": [
+      "https://nodejs.dev/learn",
+      "https://www.freecodecamp.org/news/learn-node-js-in-1-hour/"
+    ],
+    "subThreads": [
+      {
+        "title": "Introduction to Node.js - Part 1",
+        "resource": "https://nodejs.org/en/docs/guides/getting-started-guide/#part-1",
+        "response": "This part covers the basics of Node.js.",
+        "relatedLinks": [
+          "https://nodejs.dev/learn#part-1",
+          "https://www.freecodecamp.org/news/learn-node-js-in-1-hour/#part-1"
+        ]
+      },
+      {
+        "title": "Introduction to Node.js - Part 2",
+        "resource": "https://nodejs.org/en/docs/guides/getting-started-guide/#part-2",
+        "response": "This part dives deeper into Node.js.",
+        "relatedLinks": [
+          "https://nodejs.dev/learn#part-2",
+          "https://www.freecodecamp.org/news/learn-node-js-in-1-hour/#part-2"
+        ]
+      },
+      {
+        "title": "Introduction to Node.js - Part 3",
+        "resource": "https://nodejs.org/en/docs/guides/getting-started-guide/#part-3",
+        "response": "This part discusses advanced Node.js concepts.",
+        "relatedLinks": [
+          "https://nodejs.dev/learn#part-3",
+          "https://www.freecodecamp.org/news/learn-node-js-in-1-hour/#part-3"
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Mastering Async/Await in JavaScript",
+    "resource": "https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Async_await",
+    "response": "Learn how to handle asynchronous operations in JavaScript using async/await.",
+    "relatedLinks": [
+      "https://javascript.info/async",
+      "https://www.freecodecamp.org/news/understanding-asynchronous-javascript/"
+    ],
+    "subThreads": [
+      {
+        "title": "Mastering Async/Await - Part 1",
+        "resource": "https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Async_await#part-1",
+        "response": "This part covers the basics of async/await.",
+        "relatedLinks": [
+          "https://javascript.info/async#part-1",
+          "https://www.freecodecamp.org/news/understanding-asynchronous-javascript/#part-1"
+        ]
+      },
+      {
+        "title": "Mastering Async/Await - Part 2",
+        "resource": "https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Async_await#part-2",
+        "response": "This part dives deeper into async/await.",
+        "relatedLinks": [
+          "https://javascript.info/async#part-2",
+          "https://www.freecodecamp.org/news/understanding-asynchronous-javascript/#part-2"
+        ]
+      },
+      {
+        "title": "Mastering Async/Await - Part 3",
+        "resource": "https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Async_await#part-3",
+        "response": "This part discusses advanced async/await techniques.",
+        "relatedLinks": [
+          "https://javascript.info/async#part-3",
+          "https://www.freecodecamp.org/news/understanding-asynchronous-javascript/#part-3"
+        ]
+      }
+    ]
+  },
+  {
+    "title": "A Guide to Flexbox",
+    "resource": "https://css-tricks.com/snippets/css/a-guide-to-flexbox/",
+    "response": "An in-depth guide to using Flexbox for layout.",
+    "relatedLinks": [
+      "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Basic_Concepts",
+      "https://flexboxfroggy.com/"
+    ],
+    "subThreads": [
+      {
+        "title": "A Guide to Flexbox - Part 1",
+        "resource": "https://css-tricks.com/snippets/css/a-guide-to-flexbox/#part-1",
+        "response": "This part covers the basics of Flexbox.",
+        "relatedLinks": [
+          "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Basic_Concepts#part-1",
+          "https://flexboxfroggy.com/#part-1"
+        ]
+      },
+      {
+        "title": "A Guide to Flexbox - Part 2",
+        "resource": "https://css-tricks.com/snippets/css/a-guide-to-flexbox/#part-2",
+        "response": "This part dives deeper into Flexbox.",
+        "relatedLinks": [
+          "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Basic_Concepts#part-2",
+          "https://flexboxfroggy.com/#part-2"
+        ]
+      },
+      {
+        "title": "A Guide to Flexbox - Part 3",
+        "resource": "https://css-tricks.com/snippets/css/a-guide-to-flexbox/#part-3",
+        "response": "This part discusses advanced Flexbox techniques.",
+        "relatedLinks": [
+          "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Basic_Concepts#part-3",
+          "https://flexboxfroggy.com/#part-3"
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Building RESTful APIs with Node.js",
+    "resource": "https://www.taniarascia.com/node-express-server-rest-api/",
+    "response": "Learn how to build RESTful APIs using Node.js and Express.",
+    "relatedLinks": [
+      "https://expressjs.com/en/starter/installing.html",
+      "https://www.freecodecamp.org/news/build-a-simple-rest-api-with-node-js/"
+    ],
+    "subThreads": [
+      {
+        "title": "Building RESTful APIs with Node.js - Part 1",
+        "resource": "https://www.taniarascia.com/node-express-server-rest-api/#part-1",
+        "response": "This part covers the basics of building RESTful APIs.",
+        "relatedLinks": [
+          "https://expressjs.com/en/starter/installing.html#part-1",
+          "https://www.freecodecamp.org/news/build-a-simple-rest-api-with-node-js/#part-1"
+        ]
+      },
+      {
+        "title": "Building RESTful APIs with Node.js - Part 2",
+        "resource": "https://www.taniarascia.com/node-express-server-rest-api/#part-2",
+        "response": "This part dives deeper into building RESTful APIs.",
+        "relatedLinks": [
+          "https://expressjs.com/en/starter/installing.html#part-2",
+          "https://www.freecodecamp.org/news/build-a-simple-rest-api-with-node-js/#part-2"
+        ]
+      },
+      {
+        "title": "Building RESTful APIs with Node.js - Part 3",
+        "resource": "https://www.taniarascia.com/node-express-server-rest-api/#part-3",
+        "response": "This part discusses advanced RESTful API techniques.",
+        "relatedLinks": [
+          "https://expressjs.com/en/starter/installing.html#part-3",
+          "https://www.freecodecamp.org/news/build-a-simple-rest-api-with-node-js/#part-3"
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Introduction to GraphQL",
+    "resource": "https://graphql.org/learn/",
+    "response": "A comprehensive introduction to GraphQL and its features.",
+    "relatedLinks": [
+      "https://www.howtographql.com/",
+      "https://graphql.org/learn/queries/"
+    ],
+    "subThreads": [
+      {
+        "title": "Introduction to GraphQL - Part 1",
+        "resource": "https://graphql.org/learn/#part-1",
+        "response": "This part covers the basics of GraphQL.",
+        "relatedLinks": [
+          "https://www.howtographql.com/#part-1",
+          "https://graphql.org/learn/queries/#part-1"
+        ]
+      },
+      {
+        "title": "Introduction to GraphQL - Part 2",
+        "resource": "https://graphql.org/learn/#part-2",
+        "response": "This part dives deeper into GraphQL.",
+        "relatedLinks": [
+          "https://www.howtographql.com/#part-2",
+          "https://graphql.org/learn/queries/#part-2"
+        ]
+      },
+      {
+        "title": "Introduction to GraphQL - Part 3",
+        "resource": "https://graphql.org/learn/#part-3",
+        "response": "This part discusses advanced GraphQL concepts.",
+        "relatedLinks": [
+          "https://www.howtographql.com/#part-3",
+          "https://graphql.org/learn/queries/#part-3"
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Understanding the DOM",
+    "resource": "https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Introduction",
+    "response": "Learn about the Document Object Model (DOM) and how to manipulate it.",
+    "relatedLinks": [
+      "https://javascript.info/dom-nodes",
+      "https://www.freecodecamp.org/news/what-is-the-dom/"
+    ],
+    "subThreads": [
+      {
+        "title": "Understanding the DOM - Part 1",
+        "resource": "https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Introduction#part-1",
+        "response": "This part covers the basics of the DOM.",
+        "relatedLinks": [
+          "https://javascript.info/dom-nodes#part-1",
+          "https://www.freecodecamp.org/news/what-is-the-dom/#part-1"
+        ]
+      },
+      {
+        "title": "Understanding the DOM - Part 2",
+        "resource": "https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Introduction#part-2",
+        "response": "This part dives deeper into the DOM.",
+        "relatedLinks": [
+          "https://javascript.info/dom-nodes#part-2",
+          "https://www.freecodecamp.org/news/what-is-the-dom/#part-2"
+        ]
+      },
+      {
+        "title": "Understanding the DOM - Part 3",
+        "resource": "https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Introduction#part-3",
+        "response": "This part discusses advanced DOM manipulation techniques.",
+        "relatedLinks": [
+          "https://javascript.info/dom-nodes#part-3",
+          "https://www.freecodecamp.org/news/what-is-the-dom/#part-3"
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Web Accessibility Guidelines",
+    "resource": "https://www.w3.org/WAI/WCAG21/quickref/",
+    "response": "A quick reference guide to web accessibility standards.",
+    "relatedLinks": ["https://www.w3.org/WAI/", "https://www.a11yproject.com/"],
+    "subThreads": [
+      {
+        "title": "Web Accessibility Guidelines - Part 1",
+        "resource": "https://www.w3.org/WAI/WCAG21/quickref/#part-1",
+        "response": "This part covers the basics of web accessibility.",
+        "relatedLinks": [
+          "https://www.w3.org/WAI/#part-1",
+          "https://www.a11yproject.com/#part-1"
+        ]
+      },
+      {
+        "title": "Web Accessibility Guidelines - Part 2",
+        "resource": "https://www.w3.org/WAI/WCAG21/quickref/#part-2",
+        "response": "This part dives deeper into web accessibility.",
+        "relatedLinks": [
+          "https://www.w3.org/WAI/#part-2",
+          "https://www.a11yproject.com/#part-2"
+        ]
+      },
+      {
+        "title": "Web Accessibility Guidelines - Part 3",
+        "resource": "https://www.w3.org/WAI/WCAG21/quickref/#part-3",
+        "response": "This part discusses advanced web accessibility techniques.",
+        "relatedLinks": [
+          "https://www.w3.org/WAI/#part-3",
+          "https://www.a11yproject.com/#part-3"
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Introduction to Webpack",
+    "resource": "https://webpack.js.org/guides/getting-started/",
+    "response": "Learn how to use Webpack for bundling JavaScript applications.",
+    "relatedLinks": [
+      "https://webpack.js.org/concepts/",
+      "https://www.freecodecamp.org/news/webpack-beginners-guide/"
+    ],
+    "subThreads": [
+      {
+        "title": "Introduction to Webpack - Part 1",
+        "resource": "https://webpack.js.org/guides/getting-started/#part-1",
+        "response": "This part covers the basics of Webpack.",
+        "relatedLinks": [
+          "https://webpack.js.org/concepts/#part-1",
+          "https://www.freecodecamp.org/news/webpack-beginners-guide/#part-1"
+        ]
+      },
+      {
+        "title": "Introduction to Webpack - Part 2",
+        "resource": "https://webpack.js.org/guides/getting-started/#part-2",
+        "response": "This part dives deeper into Webpack.",
+        "relatedLinks": [
+          "https://webpack.js.org/concepts/#part-2",
+          "https://www.freecodecamp.org/news/webpack-beginners-guide/#part-2"
+        ]
+      },
+      {
+        "title": "Introduction to Webpack - Part 3",
+        "resource": "https://webpack.js.org/guides/getting-started/#part-3",
+        "response": "This part discusses advanced Webpack techniques.",
+        "relatedLinks": [
+          "https://webpack.js.org/concepts/#part-3",
+          "https://www.freecodecamp.org/news/webpack-beginners-guide/#part-3"
+        ]
+      }
+    ]
+  }
+]

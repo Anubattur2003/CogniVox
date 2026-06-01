@@ -1,0 +1,39 @@
+# CogniVox Configuration Example
+
+# Database configuration
+db:
+  type: neo4j                   # Database type: neo4j, arango
+  host: localhost               # Database host
+  port: 7687                    # Database port
+  user: neo4j                   # Database username
+  password: password            # Database password
+  database: neo4j               # Database name
+
+# Vector store configuration
+vector_store:
+  type: chromadb               # Vector store type: chromadb, pgvector, mongodb
+  path: data/db/chroma         # Path to store vector data
+
+# PDF processing configuration
+pdf:
+  chunk_size: 1000             # Size of text chunks
+  chunk_overlap: 200           # Overlap between consecutive chunks
+  extraction_method: auto      # Extraction method: auto, pdfminer, pypdf2, ocr
+
+# Document storage configuration
+storage:
+  bucket_path: "Bucket"        # Local directory to use as storage bucket
+
+# Query configuration
+query:
+  default_mode: hybrid         # Default search mode: semantic, keyword, hybrid
+  default_results: 5           # Default number of results to return
+
+# Visualization configuration
+visualization:
+  default_format: html         # Default visualization format: html, png, opencv
+  node_limit: 100              # Default node limit for visualizations
+
+# Export configuration
+export:
+  default_format: json         # Default export format: json, graphml, rdf 
