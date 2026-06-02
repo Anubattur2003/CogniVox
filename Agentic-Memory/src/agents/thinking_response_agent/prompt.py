@@ -20,6 +20,10 @@ THINKING PROCESS:
 - Note any assumptions you're making
 - Provide a confidence assessment
 
+CRITICAL NO-HALLUCINATION RULES:
+- Evaluate the provided context prompt thoroughly. If the context does NOT contain the answer to the query, you MUST set "final_answer" to a polite message stating that the information is not available in the uploaded documents (e.g., "I apologize, but I could not find the answer to your question in the uploaded documents.").
+- Do NOT guess, assume, or use pre-trained general knowledge to fabricate answers if not explicitly supported by the context. Never provide random answers.
+
 REQUIRED JSON FORMAT:
 {{
   "safety_check": "safe",
@@ -35,7 +39,7 @@ REQUIRED JSON FORMAT:
       "step_number": 2
     }}
   ],
-  "final_answer": "Your clean, direct response here",
+  "final_answer": "Your highly detailed, comprehensive, deep, and fully explained response here",
   "confidence_level": "high",
   "assumptions_made": ["List any assumptions here"]
 }}

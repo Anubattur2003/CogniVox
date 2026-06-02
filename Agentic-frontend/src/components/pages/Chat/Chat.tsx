@@ -276,9 +276,120 @@ const Chat: React.FC = () => {
     setSelectedDocument(source);
     setIsModalOpen(true);
   }, []);
+  const streamEventSourceRef = useRef<EventSource | null>(null);
 
+  useEffect(() => {
+    return () => {
+      if (streamEventSourceRef.current) {
+        streamEventSourceRef.current.close();
+      }
+    };
+  }, []);
 
+  const startTokenStream = (
+    taskId: string,
+    aiResponseId: string,
+    threadToUpdate: Thread,
+    onComplete?: () => void
+  ) => {
+    if (streamEventSourceRef.current) {
+      streamEventSourceRef.current.close();
+    }
 
+    const token = localStorage.getItem("auth_token");
+    // event-source URL format matching django gateway mapping
+    const streamUrl = `/api/chat/stream/${taskId}${token ? `?token=${encodeURIComponent(token)}` : ""}`;
+    const eventSource = new EventSource(streamUrl);
+    streamEventSourceRef.current = eventSource;
+
+    console.log("Started EventSource stream for task:", taskId);
+
+    eventSource.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        console.log("Received stream data:", data);
+
+        if (data.token) {
+          setMessages((prevMessages) => {
+            const updated = prevMessages.map((msg) => {
+              if (msg.id === aiResponseId) {
+                const currentAnswer = msg.aiResponseData?.answer || "";
+                return {
+                  ...msg,
+                  aiResponseData: {
+                    ...msg.aiResponseData,
+                    answer: currentAnswer + data.token,
+                  },
+                };
+              }
+              return msg;
+            });
+            return updated;
+          });
+        } else if (data.status === "done") {
+          eventSource.close();
+          streamEventSourceRef.current = null;
+          setIsGenerating(false);
+          console.log("SSE Stream finished successfully");
+
+          // Save final messages to thread and localStorage
+          setMessages((prevMessages) => {
+            if (threadToUpdate) {
+              const threads = JSON.parse(localStorage.getItem("threads") || "[]");
+              const threadIndex = threads.findIndex((t: Thread) => t.id === threadToUpdate.id);
+              if (threadIndex !== -1) {
+                const updatedThread = {
+                  ...threadToUpdate,
+                  messages: prevMessages,
+                };
+                threads[threadIndex] = updatedThread;
+                setCurrentThread(updatedThread);
+                localStorage.setItem("threads", JSON.stringify(threads));
+              }
+            }
+            return prevMessages;
+          });
+
+          if (onComplete) onComplete();
+        } else if (data.error) {
+          console.error("SSE stream error message:", data.error);
+          toast.error(data.error);
+          eventSource.close();
+          streamEventSourceRef.current = null;
+          setIsGenerating(false);
+          if (onComplete) onComplete();
+        } else if (data.sources || data.thinking_steps || data.used_tools) {
+          // Update sources and metadata
+          setMessages((prevMessages) => {
+            return prevMessages.map((msg) => {
+              if (msg.id === aiResponseId) {
+                return {
+                  ...msg,
+                  sourceObjects: data.sources || [],
+                  aiResponseData: {
+                    ...msg.aiResponseData,
+                    sources: data.sources || [],
+                  },
+                };
+              }
+              return msg;
+            });
+          });
+        }
+      } catch (err) {
+        console.error("Error parsing SSE message:", err);
+      }
+    };
+
+    eventSource.onerror = (err) => {
+      console.error("EventSource error:", err);
+      eventSource.close();
+      streamEventSourceRef.current = null;
+      setIsGenerating(false);
+      toast.error("Stream connection failed. Falling back.");
+      if (onComplete) onComplete();
+    };
+  };
   // Format relative time function with proper timezone handling
 
   const formatRelativeTime = (timestamp: string | Date) => {
@@ -858,14 +969,29 @@ Related Links:
           console.log('Adding prompt to processed list:', promptKey);
           
           setTimeout(async () => {
-            // Show user message immediately
+            // Show user message and AI response placeholder immediately
             const userMessage: Message = {
               id: Date.now().toString(),
               content: prompt,
               timestamp: getCurrentDateTime(),
               isUser: true,
             };
-            setMessages([userMessage]);
+
+            const aiResponsePlaceholderId = (Date.now() + 1).toString();
+            const aiResponsePlaceholder: Message = {
+              id: aiResponsePlaceholderId,
+              content: "",
+              timestamp: getCurrentDateTime(),
+              isUser: false,
+              aiResponseData: {
+                answer: "",
+                summary: "",
+                sources: [],
+                related_links: []
+              }
+            };
+
+            setMessages([userMessage, aiResponsePlaceholder]);
             setInputValue("");
             setIsGenerating(true);
             try {
@@ -876,28 +1002,19 @@ Related Links:
                 5,
                 responseMode // Use response mode from URL
               );
-              if (response.data && (response.status === 200 || response.status === 201)) {
-                const aiSubThread = response.data;
-                
-                // Create AI response message with structured data
-                const aiResponse: Message = {
-                  id: (Date.now() + 1).toString(),
-                  content: "", // Not used for structured responses
-                  timestamp: aiSubThread.updated_at,
-                  isUser: false,
-                  sourceObjects: aiSubThread.sources || [],
-                  aiResponseData: {
-                    summary: aiSubThread.summary,
-                    answer: aiSubThread.answer,
-                    sources: aiSubThread.sources,
-                    related_links: aiSubThread.related_links
-                  }
+              if (response.data && (response.status === 200 || response.status === 201 || response.status === 202)) {
+                const { task_id } = response.data;
+                const threadToUpdate: Thread = {
+                  id: chatId,
+                  title: "New Chat Thread",
+                  content: prompt,
+                  timestamp: getCurrentDateTime(),
+                  messages: [userMessage, aiResponsePlaceholder]
                 };
-                // Add AI response to existing user message
-                setMessages(prevMessages => [...prevMessages, aiResponse]);
-                setIsGenerating(false);
-                autoSubmitInProgressRef.current.delete(promptKey);
-                console.log('Auto-submitted prompt and received AI response:', aiSubThread);
+                startTokenStream(task_id, aiResponsePlaceholderId, threadToUpdate, () => {
+                  autoSubmitInProgressRef.current.delete(promptKey);
+                });
+                console.log('Auto-submitted prompt and initiated token stream. Task ID:', task_id);
               } else {
                 throw new Error(response.error || 'Failed to get AI response');
               }
@@ -1043,6 +1160,29 @@ Related Links:
         throw new Error('No current thread available');
       }
 
+      // Add a placeholder AI response message that will be populated via SSE stream
+      const aiResponsePlaceholderId = (Date.now() + 1).toString();
+      const aiResponsePlaceholder: Message = {
+        id: aiResponsePlaceholderId,
+        content: "",
+        timestamp: getCurrentDateTime(),
+        isUser: false,
+        aiResponseData: {
+          answer: "",
+          summary: "",
+          sources: [],
+          related_links: []
+        }
+      };
+
+      const finalMessagesWithPlaceholder = [...(activeThread.messages || []), aiResponsePlaceholder];
+      setMessages(finalMessagesWithPlaceholder);
+
+      const threadToUpdate: Thread = {
+        ...activeThread,
+        messages: finalMessagesWithPlaceholder
+      };
+
       const response = await chatApi.submitChatQuery(
         activeThread.id,
         newMessage.content,
@@ -1050,48 +1190,12 @@ Related Links:
         responseMode // Pass response mode directly for routing
       );
 
-      if (response.data && (response.status === 200 || response.status === 201)) {
-        const aiSubThread = response.data;
-        
-        // Create AI response message with structured data
-        const aiResponse: Message = {
-          id: (Date.now() + 1).toString(),
-          content: "", // Not used for structured responses
-          timestamp: aiSubThread.updated_at,
-          isUser: false,
-          execution_time: aiSubThread.execution_time || 0,
-          sourceObjects: aiSubThread.sources || [],
-          aiResponseData: {
-            summary: aiSubThread.summary,
-            answer: aiSubThread.answer,
-            sources: aiSubThread.sources,
-            related_links: aiSubThread.related_links
-          }
-        };
-        
-        const finalMessages = [...(activeThread.messages || []), aiResponse];
-        setMessages(finalMessages);
-        setIsGenerating(false);
-
-        // Update thread in localStorage
-        if (activeThread) {
-          const threads = JSON.parse(localStorage.getItem('threads') || '[]');
-          const threadIndex = threads.findIndex((t: Thread) => t.id === activeThread.id);
-          if (threadIndex !== -1) {
-            const updatedThread = {
-              ...activeThread,
-              messages: finalMessages
-            };
-            threads[threadIndex] = updatedThread;
-            setCurrentThread(updatedThread);
-            localStorage.setItem('threads', JSON.stringify(threads));
-          }
-        }
-
-        console.log('AI response received:', aiSubThread);
-        
+      if (response.data && (response.status === 200 || response.status === 201 || response.status === 202)) {
+        const { task_id } = response.data;
+        startTokenStream(task_id, aiResponsePlaceholderId, threadToUpdate);
+        console.log('AI response generation task initiated:', task_id);
       } else {
-        throw new Error(response.error || 'Failed to get AI response');
+        throw new Error(response.error || 'Failed to trigger AI generation task');
       }
     } catch (error) {
       console.error('Failed to get AI response:', error);

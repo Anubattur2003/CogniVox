@@ -109,18 +109,16 @@ class RegisterView(APIView):
             )
         
         try:
-            # Get the default subscription plan
+            # Get the default subscription plan if available
             default_plan = SubscriptionPlan.objects.get(name="Free")
         except SubscriptionPlan.DoesNotExist:
-            return Response(
-                {'detail': 'Default subscription plan not found'}, 
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
+            default_plan = None
         
         # Create user
         user = serializer.save()
-        user.subscription_plan = default_plan
-        user.save()
+        if default_plan:
+            user.subscription_plan = default_plan
+            user.save()
         
         # Generate token
         refresh = RefreshToken.for_user(user)

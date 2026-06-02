@@ -26,6 +26,7 @@ export const API_ENDPOINTS = {
     MESSAGES: `${API_BASE_URL}/chat/messages`,
     CREATE_THREAD: `${API_BASE_URL}/chat/threads`,
     SPACES: `${API_BASE_URL}/chat/spaces`,
+    SUBMIT: `${API_BASE_URL}/chat/submit/`,
   },
   GRAPH_RAG: {
     INGEST: `${GRAPH_RAG_API_URL}/ingest`,
@@ -114,6 +115,15 @@ export interface NewThreadResponse {
   updated_at: string;
   sub_threads: any[];
   chat_id: string;
+}
+
+// Interface for async chat submit response
+export interface AsyncChatSubmitResponse {
+  success: boolean;
+  status: string;
+  message: string;
+  task_id: string;
+  sub_thread_id: string;
 }
 
 // Response interface for GraphRAG ingest
@@ -304,22 +314,22 @@ export const chatApi = {
     return apiCall<ChatSubThread[]>(url);
   },
 
-  // Submit a chat query and get AI response
+  // Submit a chat query asynchronously and get a task_id
   submitChatQuery: async (
     threadId: string,
     query: string,
     nResults: number = 5,
     responseMode: string = "general"
-  ): Promise<ApiResponse<ChatSubThread>> => {
-    console.log("Submitting chat query:", {
+  ): Promise<ApiResponse<AsyncChatSubmitResponse>> => {
+    console.log("Submitting chat query (async):", {
       threadId,
       query,
       nResults,
       responseMode,
     });
 
-    // Only send required fields - backend will populate answer, summary, sources, etc.
     const requestBody = {
+      thread_id: threadId,
       query: query.trim(),
       response_mode: responseMode,
       n_results: nResults,
@@ -327,8 +337,7 @@ export const chatApi = {
 
     console.log("Chat query request body:", JSON.stringify(requestBody));
 
-    const url = `${API_ENDPOINTS.CHAT.THREADS}/${threadId}/sub_threads`;
-    return apiCall<ChatSubThread>(url, {
+    return apiCall<AsyncChatSubmitResponse>(API_ENDPOINTS.CHAT.SUBMIT, {
       method: "POST",
       body: JSON.stringify(requestBody),
     });

@@ -23,6 +23,8 @@ urlpatterns = [
     
     # Chat endpoints
     path('submit/', views.submit_message, name='submit_message'),
+    path('stream/<str:task_id>/', views.stream_message, name='stream_message_with_slash'),
+    path('stream/<str:task_id>', views.stream_message, name='stream_message'),
     
     # Health and stats
     path('health/', views.ChatHealthView.as_view(), name='chat_health'),

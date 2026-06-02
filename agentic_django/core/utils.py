@@ -128,18 +128,11 @@ def log_api_usage(request, response, start_time):
 
 
 def check_subscription_status(user):
-    """Check user's subscription status"""
-    if not user.subscription_plan:
-        return {
-            'is_active': False,
-            'plan_name': None,
-            'expires_at': None
-        }
-    
+    """Check user's subscription status - subscription model disabled"""
     return {
-        'is_active': user.is_subscription_active,
-        'plan_name': user.subscription_plan.name,
-        'expires_at': user.subscription_end_date
+        'is_active': True,
+        'plan_name': 'Unlimited',
+        'expires_at': None
     }
 
 

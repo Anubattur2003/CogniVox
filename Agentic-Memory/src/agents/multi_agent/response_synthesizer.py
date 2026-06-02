@@ -224,23 +224,22 @@ class ResponseSynthesisAgent(BaseAgent):
                     synthesis_parts.append(f"\nNote: Tools were selected because: {reasoning}")
             
             synthesis_prompt = "\n".join(synthesis_parts)
-            synthesis_prompt += "\n\nGenerate a CRISP, DIRECT response that:"
-            synthesis_prompt += "\n1. Answers ONLY what the user asked - nothing more, nothing less"
-            synthesis_prompt += "\n2. Gets straight to the point - no introductory fluff or filler sentences"
-            synthesis_prompt += "\n3. Uses ONLY information from the provided sources - NO hallucinations or made-up facts"
-            synthesis_prompt += "\n4. Is concise and to-the-point - avoid unnecessary elaboration or explanations"
-            synthesis_prompt += "\n5. Integrates information naturally when multiple sources are available"
-            synthesis_prompt += "\n6. Cites sources briefly when using knowledge base information (e.g., 'According to [source]...')"
+            synthesis_prompt += "\n\nGenerate a DETAILED, COMPREHENSIVE, and WELL-EXPLAINED response that:"
+            synthesis_prompt += "\n1. Explains the answer thoroughly with complete context and rich descriptions"
+            synthesis_prompt += "\n2. Provides step-by-step structural breakdowns or bullet points where applicable"
+            synthesis_prompt += "\n3. Uses information from the provided sources accurately - including citations"
+            synthesis_prompt += "\n4. Is highly detailed and educational - do not simplify or abbreviate the explanations"
+            synthesis_prompt += "\n5. Integrates multiple sources of information naturally"
+            synthesis_prompt += "\n6. Cites sources in-line or at the end clearly (e.g., 'According to [source]...')"
             synthesis_prompt += "\n7. Is free of technical artifacts, system details, thinking blocks, or internal processing notes"
             synthesis_prompt += "\n8. Provides ONLY the final answer - no Thought:, Action:, Observation:, or reasoning markers"
             synthesis_prompt += "\n\nCRITICAL RULES:"
-            synthesis_prompt += "\n- If the user asks a simple question, give a simple, direct answer"
-            synthesis_prompt += "\n- If the user asks to use a tool, show the tool result directly without preamble"
-            synthesis_prompt += "\n- Do NOT add context the user didn't ask for"
-            synthesis_prompt += "\n- Do NOT explain your process or how you found the answer"
-            synthesis_prompt += "\n- Do NOT include phrases like 'Based on the information provided' or 'I found that' - just state the answer"
-            synthesis_prompt += "\n- Stick strictly to facts from sources - if information isn't available, say so directly"
-            synthesis_prompt += "\n\nIMPORTANT: Your response should be clean, crisp, and ready for the user. No thinking process, no reasoning blocks, no technical markers, no unnecessary words."
+            synthesis_prompt += "\n- Provide a rich, detailed, and comprehensive answer to the user's query"
+            synthesis_prompt += "\n- If the user asks to use a tool, show the tool result and elaborate on what it means"
+            synthesis_prompt += "\n- Do NOT make up facts - stick strictly to facts from sources, but explain them thoroughly"
+            synthesis_prompt += "\n- Do NOT explain your internal routing process or technical architecture"
+            synthesis_prompt += "\n- IF the context from the knowledge base (GraphRAG) or tools does not contain the answer to the user's query, you MUST politely state that you cannot find the answer in the uploaded documents. Never guess, assume, or fabricate answers using pre-trained general knowledge. For example, respond with: 'I apologize, but I could not find the answer to your question in the uploaded documents.'"
+            synthesis_prompt += "\n\nIMPORTANT: Your response should be highly detailed, comprehensive, structural, and cited. No technical markers or internal processing logs."
             
             messages = [
                 SystemMessage(content=self.system_prompt),

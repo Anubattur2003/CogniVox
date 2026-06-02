@@ -1436,4 +1436,105 @@ def clear_performance_metrics():
             "service": "Performance Metrics",
             "status": "error",
             "error": str(e)
-        } 
+        }
+
+@router.post("/chat/stream")
+async def chat_stream(request: Request, chat_message: ChatMessage):
+    """
+    Stream chat response token-by-token using Server-Sent Events (SSE).
+    """
+    from sse_starlette.sse import EventSourceResponse
+    
+    async def event_generator():
+        # Yield starting status
+        yield {"event": "status", "data": json.dumps({"status": "starting", "message": "Initiating agent..."})}
+        
+        if chat_message.response_mode == "general":
+            try:
+                agent = response_mode_router.agents.get("general")
+                from ..agents.general_response_agent.prompt import GENERAL_RESPONSE_PROMPT
+                from langchain_core.messages import HumanMessage, SystemMessage
+                
+                # Setup context
+                context_prompt = ""
+                if chat_message.user_details:
+                    user_id = chat_message.user_id
+                    chat_id = chat_message.user_details.get("chat_id", "unknown")
+                    if chat_id != 'unknown':
+                        history_context = context_agent.get_context(chat_id, user_id)
+                        if history_context:
+                            context_prompt = history_context
+                
+                system_message = SystemMessage(content=GENERAL_RESPONSE_PROMPT.format(
+                    context_prompt=context_prompt if context_prompt else "No additional context provided.",
+                    user_message=""
+                ))
+                user_msg = HumanMessage(content=chat_message.message)
+                
+                yield {"event": "status", "data": json.dumps({"status": "generating", "message": "Generating response..."})}
+                
+                # Stream from langchain LLM
+                if hasattr(agent.llm, "astream"):
+                    async for chunk in agent.llm.astream([system_message, user_msg]):
+                        yield {"event": "token", "data": json.dumps({"token": chunk.content})}
+                else:
+                    # Fallback to sync stream
+                    for chunk in agent.llm.stream([system_message, user_msg]):
+                        yield {"event": "token", "data": json.dumps({"token": chunk.content})}
+                        
+            except Exception as e:
+                logger.error(f"Error in streaming general response: {str(e)}")
+                yield {"event": "error", "data": json.dumps({"error": str(e)})}
+        else:
+            # Thinking and Agentic modes run query routing and stream steps
+            try:
+                import anyio
+                yield {"event": "status", "data": json.dumps({"status": "thinking", "message": f"Running {chat_message.response_mode} workflow..."})}
+                
+                context_prompt = ""
+                if chat_message.user_details:
+                    user_id = chat_message.user_id
+                    chat_id = chat_message.user_details.get("chat_id", "unknown")
+                    if chat_id != 'unknown':
+                        history_context = context_agent.get_context(chat_id, user_id)
+                        if history_context:
+                            context_prompt = history_context
+
+                # Run routing in a worker thread to keep FastAPI non-blocking
+                result = await anyio.to_thread.run_sync(
+                    response_mode_router.route_query,
+                    chat_message.response_mode,
+                    chat_message.message,
+                    chat_message.user_id,
+                    context_prompt,
+                    **{
+                        "chat_id": chat_message.user_details.get("chat_id", "unknown") if chat_message.user_details else "unknown",
+                        "auth_token": chat_message.auth_token,
+                        "n_results": chat_message.user_details.get("n_results", 20) if chat_message.user_details else 20
+                    }
+                )
+                
+                if result.get("success", False):
+                    response_text = result.get("response", "")
+                    
+                    # Yield metadata
+                    yield {"event": "metadata", "data": json.dumps({
+                        "sources": result.get("sources", []),
+                        "used_tools": result.get("used_tools", []),
+                        "thinking_steps": result.get("thinking_steps", [])
+                    })}
+                    
+                    # Smoothly type out response
+                    chunk_size = 10
+                    for i in range(0, len(response_text), chunk_size):
+                        yield {"event": "token", "data": json.dumps({"token": response_text[i:i+chunk_size]})}
+                        await asyncio.sleep(0.01)
+                else:
+                    yield {"event": "error", "data": json.dumps({"error": result.get("error", "Failed to generate agent response")})}
+            except Exception as e:
+                logger.error(f"Error in streaming complex response: {str(e)}")
+                yield {"event": "error", "data": json.dumps({"error": str(e)})}
+                
+        yield {"event": "status", "data": json.dumps({"status": "done"})}
+        
+    return EventSourceResponse(event_generator()) 

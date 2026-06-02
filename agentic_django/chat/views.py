@@ -1,8 +1,11 @@
 import os
 import json
+# pyrefly: ignore [missing-import]
 import aiohttp
 import asyncio
 import logging
+import redis
+from django.http import StreamingHttpResponse
 from datetime import datetime, timezone
 from typing import Dict, Any, Optional, List
 
@@ -636,7 +639,7 @@ class ChatSubThreadViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         """Get sub-threads for the current user's threads."""
         return ChatSubThread.objects.filter(
-            chat_thread__user=self.request.user
+            parent_thread__user=self.request.user
         ).order_by('-created_at')
 
     def perform_create(self, serializer):
@@ -649,75 +652,175 @@ class ChatSubThreadViewSet(viewsets.ModelViewSet):
 @permission_classes([IsAuthenticated])
 def submit_message(request):
     """
-    Submit a message and get AI response.
-    Compatible with the original FastAPI endpoint structure.
+    Submit a message, save it in the database immediately as a sub-thread,
+    and trigger a background generation task.
     """
-    # Extract data from request - simplified without model validation
     query = request.data.get('query', '')
-    global_access = request.data.get('global_access', False)
+    thread_id = request.data.get('thread_id', None)
     
     if not query or not query.strip():
         return Response(
             {'detail': 'Query is required'},
             status=status.HTTP_400_BAD_REQUEST
         )
-    
-    try:
-        with transaction.atomic():
-            # Process the message with Memory service
-            user_details = {
-                'role': request.user.role,
-                'email': request.user.email,
-                'username': request.user.username
-            }
-            
-            # Extract auth token from request headers
-            auth_header = request.META.get('HTTP_AUTHORIZATION', '')
-            auth_token = None
-            if auth_header.startswith('Bearer '):
-                auth_token = auth_header[7:]
-            
-            # Run async function in sync context
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-            try:
-                memory_response = loop.run_until_complete(
-                    memory_service.generate_chat_response(
-                        user_id=str(request.user.id),
-                        message=query,
-                        response_mode=request.data.get('response_mode', 'general'),
-                        user_details=user_details,
-                        auth_token=auth_token  # Pass auth token for MCP access
-                    )
-                )
-            finally:
-                loop.close()
-            
-            # Create audit log
-            create_audit_log(
-                user=request.user,
-                action='SUBMIT_MESSAGE',
-                resource_type='Message',
-                details={'query': query[:100]},
-                request=request
-            )
-            
-            # Format response
-            response_data = {
-                'message': memory_response.get('response', 'No response generated'),
-                'is_global': global_access,
-                'sources': memory_response.get('sources', []),
-                'summary': memory_response.get('variants', {}).get('summary', ''),
-                'related_links': memory_response.get('related_links', [])
-            }
-            
-            return Response(response_data, status=status.HTTP_200_OK)
-    
-    except Exception as e:
+    if not thread_id:
         return Response(
-            {'detail': f'Error processing message: {str(e)}'},
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            {'detail': 'Thread ID (thread_id) is required'},
+            status=status.HTTP_400_BAD_REQUEST
         )
+        
+    # Get the thread and verify ownership
+    try:
+        thread = ChatThread.objects.get(id=thread_id, user=request.user)
+    except ChatThread.DoesNotExist:
+        return Response(
+            {'detail': 'Thread not found or permission denied'},
+            status=status.HTTP_404_NOT_FOUND
+        )
+        
+    # Check sub-thread limit
+    max_sub_threads = getattr(settings, 'MAX_SUB_THREADS', 50)
+    if thread.sub_threads.count() >= max_sub_threads:
+        return Response(
+            {'detail': f'Cannot add more than {max_sub_threads} sub-threads. Please create a new chat.'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    response_mode = request.data.get('response_mode', 'general')
+    n_results = request.data.get('n_results', 5)
+
+    # Create the sub-thread record in Django database immediately in a 'generating' state
+    sub_thread_data = {
+        'chat_id': thread_id,
+        'response_mode': response_mode,
+        'query': query.strip(),
+        'answer': '', # To be updated by background task
+        'summary': '',
+        'sources': [],
+        'related_links': [],
+        'n_results': n_results,
+        'execution_time': 0.0,
+    }
+    
+    serializer = ChatSubThreadSerializer(data=sub_thread_data)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+    with transaction.atomic():
+        sub_thread = serializer.save(parent_thread=thread)
+        # Update thread timestamp
+        thread.updated_at = django_timezone.now()
+        thread.save()
+
+    # Pass detailed user context including n_results and current chat_id to memory service
+    user_details = {
+        'id': request.user.id,
+        'role': str(request.user.role),
+        'email': request.user.email,
+        'username': request.user.username,
+        'is_active': request.user.is_active,
+        'created_at': request.user.created_at.isoformat() if request.user.created_at else None,
+        'chat_id': thread_id,
+        'n_results': n_results
+    }
+    
+    auth_header = request.META.get('HTTP_AUTHORIZATION', '')
+    auth_token = None
+    if auth_header.startswith('Bearer '):
+        auth_token = auth_header[7:]
+        
+    # Import locally to avoid circular imports
+    from .tasks import generate_response_task
+    
+    # Trigger task asynchronously in Celery, passing sub_thread.id so it saves the result
+    task = generate_response_task.delay(
+        str(request.user.id),
+        query,
+        response_mode,
+        user_details,
+        auth_token,
+        str(sub_thread.id)
+    )
+    
+    # Create audit log
+    create_audit_log(
+        user=request.user,
+        action='SUBMIT_MESSAGE_ASYNC',
+        resource_type='Message',
+        details={'query': query[:100], 'task_id': task.id, 'sub_thread_id': str(sub_thread.id)},
+        request=request
+    )
+    
+    return Response({
+        'success': True,
+        'status': 'accepted',
+        'message': 'Message processing initiated.',
+        'task_id': task.id,
+        'sub_thread_id': str(sub_thread.id)
+    }, status=status.HTTP_202_ACCEPTED)
+
+
+from rest_framework.permissions import AllowAny
+from rest_framework_simplejwt.tokens import AccessToken
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def stream_message(request, task_id):
+    """
+    Stream token-by-token response chunks using Server-Sent Events (SSE).
+    Supports token validation via standard auth headers or ?token= query parameter.
+    """
+    user = None
+    # 1. Try standard request user (authenticated via header/sessions)
+    if request.user and request.user.is_authenticated:
+        user = request.user
+    else:
+        # 2. Try query parameter (used by browsers' native EventSource client)
+        token_param = request.query_params.get('token')
+        if token_param:
+            try:
+                validated_token = AccessToken(token_param)
+                user_id = validated_token['user_id']
+                from django.contrib.auth import get_user_model
+                UserModel = get_user_model()
+                user = UserModel.objects.get(id=user_id)
+            except Exception as e:
+                logger.error(f"SSE authentication via token param failed: {str(e)}")
+                
+    if not user:
+        return Response(
+            {'detail': 'Authentication credentials were not provided or are invalid.'},
+            status=status.HTTP_401_UNAUTHORIZED
+        )
+        
+    r = redis.Redis.from_url(settings.CELERY_BROKER_URL)
+    pubsub = r.pubsub()
+    channel_name = f"chat_stream_{task_id}"
+    pubsub.subscribe(channel_name)
+    
+    def event_generator():
+        try:
+            for message in pubsub.listen():
+                if message['type'] == 'message':
+                    data_str = message['data'].decode('utf-8')
+                    yield f"data: {data_str}\n\n"
+                    
+                    try:
+                        data_json = json.loads(data_str)
+                        if 'status' in data_json and data_json['status'] == 'done':
+                            break
+                        if 'error' in data_json:
+                            break
+                    except Exception:
+                        pass
+        finally:
+            pubsub.unsubscribe(channel_name)
+            pubsub.close()
+            
+    response = StreamingHttpResponse(event_generator(), content_type='text/event-stream')
+    response['Cache-Control'] = 'no-cache'
+    response['X-Accel-Buffering'] = 'no'  # Disables buffering in Nginx
+    return response
 
 
 class ChatHealthView(APIView):
