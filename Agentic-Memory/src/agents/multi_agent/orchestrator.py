@@ -560,18 +560,28 @@ class MultiAgentOrchestrator:
                 if isinstance(mcp_reasoning, dict) and mcp_reasoning.get("reasoning"):
                     mcp_result["reasoning"] = mcp_reasoning.get("reasoning", "")
             
+            graphrag_result = state.get("graphrag_result", {})
+
+            document_found = (
+                graphrag_result.get("source_found", False)
+                and len(graphrag_result.get("sources", [])) > 0
+            )
+            
             synthesis = self.response_synthesizer.synthesize(
                 query=state["user_message"],
                 graphrag_result=state.get("graphrag_result"),
                 mcp_result=mcp_result,
                 reasoning_result=state.get("reasoning_result"),  # Pass precise reasoning
                 context=state.get("context_prompt", ""),
-                user_id=state.get("user_id", "default")
+                user_id=state.get("user_id", "default"),
+
+                document_found=document_found
             )
             
             return {
                 "synthesized_response": synthesis.get("response", ""),
                 "sources": synthesis.get("sources", []),
+                "source_type": synthesis.get("source_type", "unknown"),
                 "thinking_steps": synthesis.get("thinking_steps", []),
                 "used_tools": synthesis.get("used_tools", [])
             }
@@ -730,6 +740,7 @@ class MultiAgentOrchestrator:
             response_data = {
                 "success": True,
                 "response": final_state.get("validated_response") or final_state.get("synthesized_response", ""),
+                "source_type": final_state.get("source_type", "unknown"),
                 "response_time": execution_time,
                 "sources": sources,
                 "document_relevant": len(sources) > 0 and final_state.get("graphrag_result", {}).get("source_found", False),

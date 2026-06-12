@@ -763,9 +763,17 @@ def submit_message(request):
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.tokens import AccessToken
 
-@api_view(['GET'])
-@permission_classes([AllowAny])
+# @api_view(['GET'])
+# @permission_classes([AllowAny])
+# def stream_message(request, task_id):
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt
 def stream_message(request, task_id):
+
+    print("=" * 50)
+    print("STREAM_MESSAGE ENTERED")
+    print("=" * 50)
     """
     Stream token-by-token response chunks using Server-Sent Events (SSE).
     Supports token validation via standard auth headers or ?token= query parameter.

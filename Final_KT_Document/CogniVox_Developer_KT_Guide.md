@@ -82,10 +82,17 @@ docker-compose -f docker-compose.agentic-services.yml ps
 
 ```bash
 # Connect to Ollama container and pull models
-docker exec -it agentic-ollama ollama pull qwen2.5:7b
-docker exec -it agentic-ollama ollama pull gemma2:2b
-docker exec -it agentic-ollama ollama pull mistral:latest
-docker exec -it agentic-ollama ollama pull nomic-embed-text
+# Note: Since the system is configured to run individual containers for each model under a multi-container proxy setup, pull the models on their respective containers:
+docker exec -it ollama-qwen2-5-7b ollama pull qwen2.5:7b
+docker exec -it ollama-gemma2-2b ollama pull gemma2:2b
+docker exec -it ollama-mistral ollama pull mistral:latest
+docker exec -it ollama-nomic-embed-text ollama pull nomic-embed-text
+
+# (Alternative) If using a single shared Ollama container named agentic-ollama:
+# docker exec -it agentic-ollama ollama pull qwen2.5:7b
+# docker exec -it agentic-ollama ollama pull gemma2:2b
+# docker exec -it agentic-ollama ollama pull mistral:latest
+# docker exec -it agentic-ollama ollama pull nomic-embed-text
 ```
 
 ### Step 4: Set Up Django Backend
@@ -94,7 +101,7 @@ docker exec -it agentic-ollama ollama pull nomic-embed-text
 cd agentic_django
 
 # Create virtual environment
-python -m venv .venv
+py -3.11 -m venv .venv --prompt django
 
 # Activate virtual environment
 # Windows:
@@ -114,6 +121,14 @@ python manage.py createsuperuser
 # Run development server
 python manage.py runserver 0.0.0.0:8000
 ```
+# Create and run Celery worker
+```bash
+cd agentic_django
+
+.\.venv\Scripts\activate
+
+celery -A agentic_django worker -P solo -l info
+```
 
 ### Step 5: Set Up Agentic-Memory Service
 
@@ -123,7 +138,7 @@ Open a new terminal:
 cd Agentic-Memory
 
 # Create virtual environment
-python -m venv .venv
+py -3.11 -m venv .venv --prompt memory
 
 # Activate
 .venv\Scripts\activate  # Windows
@@ -146,7 +161,7 @@ Open another new terminal:
 cd Agentic-Graph-RAG
 
 # Create virtual environment
-python -m venv .venv
+py -3.11 -m venv .venv --prompt graphrag
 
 # Activate
 .venv\Scripts\activate  # Windows

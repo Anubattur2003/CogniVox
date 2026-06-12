@@ -96,27 +96,24 @@ class ContextAwarenessAgent:
             logger.exception("Detailed error info:")
             return ""
     
-    def store_interaction(self, chat_id: str, user_id: str, message: str, 
-                         response: str, metadata: Optional[Dict[str, Any]] = None) -> bool:
-        """
-        Store the current interaction in memory.
-        
-        Args:
-            chat_id: Unique identifier for the chat thread
-            user_id: Unique identifier for the user
-            message: The user's message
-            response: The AI's response
-            metadata: Optional additional metadata about the interaction
-            
-        Returns:
-            Success status (True/False)
-        """
+    def store_interaction(self, chat_id: str, user_id: str,
+                            message: str, response: str,
+                            metadata: Optional[Dict[str, Any]] = None) -> bool:
+
+        logger.info("=" * 60)
+        logger.info("CONTEXT_AGENT STORE_INTERACTION CALLED")
+        logger.info(f"chat_id={chat_id}")
+        logger.info(f"user_id={user_id}")
+        logger.info("=" * 60)
+
         if not chat_id or not user_id:
             logger.warning("Missing chat_id or user_id in store_interaction")
             return False
-            
+
         try:
-            # Store the interaction in memory
+
+            logger.info("CALLING chat_memory.store_interaction()")
+
             success = chat_memory.store_interaction(
                 chat_id=chat_id,
                 user_id=user_id,
@@ -124,13 +121,16 @@ class ContextAwarenessAgent:
                 response=response,
                 metadata=metadata
             )
-            
+
+            logger.info(f"chat_memory returned: {success}")
+
             if success:
                 logger.info(f"Stored interaction for chat {chat_id}")
             else:
                 logger.warning(f"Failed to store interaction for chat {chat_id}")
-                
+
             return success
+
         except Exception as e:
             logger.error(f"Error storing interaction: {str(e)}")
             return False

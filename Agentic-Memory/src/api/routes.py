@@ -935,13 +935,16 @@ def chat(
                 parallel=False,
                 metadata={"chat_id": chat_id, "response_mode": response_mode}
             ):
-                context_agent.store_interaction(
-                    chat_id=chat_id,
-                    user_id=user_id,
-                    message=original_query,
-                    response=final_response,
-                    metadata=metadata
-                )
+                if chat_id != 'unknown':
+                    context_agent.store_interaction(
+                        chat_id=chat_id,
+                        user_id=user_id,
+                        message=original_query,
+                        response=final_response,
+                        metadata=metadata
+                    )
+
+                    print("MEMORY STATS:", context_agent.chat_memory.get_stats())
         
         # Finish thinking tracking if active
         if thinking_session:
@@ -1501,21 +1504,46 @@ async def chat_stream(request: Request, chat_message: ChatMessage):
                             context_prompt = history_context
 
                 # Run routing in a worker thread to keep FastAPI non-blocking
+                from functools import partial
+
                 result = await anyio.to_thread.run_sync(
-                    response_mode_router.route_query,
-                    chat_message.response_mode,
-                    chat_message.message,
-                    chat_message.user_id,
-                    context_prompt,
-                    **{
-                        "chat_id": chat_message.user_details.get("chat_id", "unknown") if chat_message.user_details else "unknown",
-                        "auth_token": chat_message.auth_token,
-                        "n_results": chat_message.user_details.get("n_results", 20) if chat_message.user_details else 20
-                    }
+                    partial(
+                        response_mode_router.route_query,
+                        response_mode=chat_message.response_mode,
+                        user_message=chat_message.message,
+                        user_id=chat_message.user_id,
+                        context_prompt=context_prompt,
+                        chat_id=chat_message.user_details.get("chat_id", "unknown")
+                            if chat_message.user_details else "unknown",
+                        auth_token=chat_message.auth_token,
+                        n_results=chat_message.user_details.get("n_results", 20)
+                            if chat_message.user_details else 20
+                    )
                 )
                 
                 if result.get("success", False):
                     response_text = result.get("response", "")
+
+                    # Store interaction in memory
+                    try:
+                        if chat_message.user_details:
+                            chat_id = chat_message.user_details.get("chat_id", "unknown")
+
+                            if chat_id != "unknown":
+                                context_agent.store_interaction(
+                                    chat_id=chat_id,
+                                    user_id=str(chat_message.user_id),
+                                    message=chat_message.message,
+                                    response=response_text,
+                                    metadata={
+                                        "response_mode": chat_message.response_mode
+                                    }
+                                )
+
+                                logger.info(f"✅ Memory stored for chat {chat_id}")
+
+                    except Exception as memory_error:
+                        logger.error(f"❌ Memory storage failed: {str(memory_error)}")
                     
                     # Yield metadata
                     yield {"event": "metadata", "data": json.dumps({

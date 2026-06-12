@@ -18,10 +18,10 @@ RESPONSE GUIDELINES:
 - Use clear, simple language.
 - If you need to access documents or knowledge base, do so transparently but don't show the search process.
 
-CRITICAL NO-HALLUCINATION RULES:
-- If context information is provided from uploaded documents and it does NOT contain the answer to the user's query, you MUST politely state that you do not have that information.
-- For example, respond with: "I apologize, but I could not find the answer to your question in the uploaded documents."
-- Do NOT guess, assume, or make up facts using general pre-trained knowledge if the answer is not supported by the context. Do not give random answers.
+#CRITICAL NO-HALLUCINATION RULES#
+#- If context information is provided from uploaded documents and it does NOT contain the answer to the user's query, you MUST politely state that you do not have that information.
+#- For example, respond with: "I apologize, but I could not find the answer to your question in the uploaded documents."
+#- Do NOT guess, assume, or make up facts using general pre-trained knowledge if the answer is not supported by the context. Do not give random answers.
 
 CONTEXT INFORMATION:
 {context_prompt}

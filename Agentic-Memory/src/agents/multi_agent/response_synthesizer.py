@@ -57,10 +57,7 @@ class ResponseSynthesisAgent(BaseAgent):
                 "straight_to_point": "Get straight to the user's intent - no fluff, no filler sentences"
             },
             "output_format": {
-                "response": "string - final synthesized response",
-                "sources": "array - source documents used",
-                "thinking_steps": "array - synthesis reasoning steps",
-                "used_tools": "array - tools that contributed to response"
+                "response": "Final user-facing answer only"
             }
         }
         
@@ -111,6 +108,34 @@ class ResponseSynthesisAgent(BaseAgent):
         
         # Remove any remaining technical artifacts
         response = re.sub(r'\[OK\]|\[FAIL\]|\[ERROR\]', '', response)
+
+        response = re.sub(
+            r"Sources:.*?(?=Thinking Steps:|Tools Contributed:|$)",
+            "",
+            response,
+            flags=re.IGNORECASE | re.DOTALL
+        )
+
+        response = re.sub(
+            r"Thinking Steps:.*?(?=Tools Contributed:|$)",
+            "",
+            response,
+            flags=re.IGNORECASE | re.DOTALL
+        )
+
+        response = re.sub(
+            r"Tools Contributed:.*$",
+            "",
+            response,
+            flags=re.IGNORECASE | re.DOTALL
+        )
+
+        response = re.sub(
+            r"Final Synthesized Response:",
+            "",
+            response,
+            flags=re.IGNORECASE
+        )
         
         # Clean up multiple newlines
         response = re.sub(r'\n{3,}', '\n\n', response)
@@ -124,7 +149,8 @@ class ResponseSynthesisAgent(BaseAgent):
         mcp_result: Optional[Dict[str, Any]] = None,
         reasoning_result: Optional[Dict[str, Any]] = None,  # NEW: Precise reasoning from QueryReasoningAgent
         context: str = "",
-        user_id: str = "default"
+        user_id: str = "default",
+        document_found: bool = True
     ) -> Dict[str, Any]:
         """
         Synthesize response from multiple agent results.
@@ -223,23 +249,62 @@ class ResponseSynthesisAgent(BaseAgent):
                 if reasoning:
                     synthesis_parts.append(f"\nNote: Tools were selected because: {reasoning}")
             
-            synthesis_prompt = "\n".join(synthesis_parts)
-            synthesis_prompt += "\n\nGenerate a DETAILED, COMPREHENSIVE, and WELL-EXPLAINED response that:"
-            synthesis_prompt += "\n1. Explains the answer thoroughly with complete context and rich descriptions"
-            synthesis_prompt += "\n2. Provides step-by-step structural breakdowns or bullet points where applicable"
-            synthesis_prompt += "\n3. Uses information from the provided sources accurately - including citations"
-            synthesis_prompt += "\n4. Is highly detailed and educational - do not simplify or abbreviate the explanations"
-            synthesis_prompt += "\n5. Integrates multiple sources of information naturally"
-            synthesis_prompt += "\n6. Cites sources in-line or at the end clearly (e.g., 'According to [source]...')"
-            synthesis_prompt += "\n7. Is free of technical artifacts, system details, thinking blocks, or internal processing notes"
-            synthesis_prompt += "\n8. Provides ONLY the final answer - no Thought:, Action:, Observation:, or reasoning markers"
-            synthesis_prompt += "\n\nCRITICAL RULES:"
-            synthesis_prompt += "\n- Provide a rich, detailed, and comprehensive answer to the user's query"
-            synthesis_prompt += "\n- If the user asks to use a tool, show the tool result and elaborate on what it means"
-            synthesis_prompt += "\n- Do NOT make up facts - stick strictly to facts from sources, but explain them thoroughly"
-            synthesis_prompt += "\n- Do NOT explain your internal routing process or technical architecture"
-            synthesis_prompt += "\n- IF the context from the knowledge base (GraphRAG) or tools does not contain the answer to the user's query, you MUST politely state that you cannot find the answer in the uploaded documents. Never guess, assume, or fabricate answers using pre-trained general knowledge. For example, respond with: 'I apologize, but I could not find the answer to your question in the uploaded documents.'"
-            synthesis_prompt += "\n\nIMPORTANT: Your response should be highly detailed, comprehensive, structural, and cited. No technical markers or internal processing logs."
+            if not (reasoning_result and reasoning_result.get("precise_answer")):
+                synthesis_prompt = "\n".join(synthesis_parts)
+
+            if not document_found:
+                synthesis_prompt += """
+
+            IMPORTANT DOCUMENT STATUS:
+
+            No relevant information was found in the uploaded documents.
+
+            Rules:
+            1. Do NOT pretend the answer came from uploaded documents.
+            2. If you know the answer, clearly say:
+            "This information was not found in the uploaded documents. Based on my general knowledge..."
+            3. If you don't know, say:
+            "I could not find this information in the uploaded documents and I do not know the answer."
+            4. Never make up document sources.
+
+            """
+
+            synthesis_prompt += "\n\nRESPONSE STYLE RULES:"
+            synthesis_prompt += "\n1. Generate a response appropriate to the user's question."
+            synthesis_prompt += "\n2. For simple factual questions, keep answers short, direct, and concise."
+            synthesis_prompt += "\n3. Do not add unnecessary explanations, reasoning, source summaries, or background information unless requested."
+            synthesis_prompt += "\n4. For complex, analytical, educational, technical, or research-oriented questions, provide detailed explanations with proper structure."
+            synthesis_prompt += "\n5. Match the level of detail to the user's question."
+            synthesis_prompt += "\n6. Use information from provided sources accurately."
+            synthesis_prompt += "\n7. Cite sources when document information is used."
+            synthesis_prompt += "\n8. Do not include technical artifacts, system details, thinking blocks, internal processing notes, or implementation details."
+            synthesis_prompt += "\n9. Provide only the final answer to the user."
+            synthesis_prompt += "\n10. Never fabricate information, sources, citations, documents, or references."
+
+            synthesis_prompt += "\n\nDOCUMENT AWARENESS RULES:"
+            synthesis_prompt += "\n1. If relevant information is found in uploaded documents, answer using the document information."
+            synthesis_prompt += "\n2. You may improve readability, formatting, and explanation using your language abilities."
+            synthesis_prompt += "\n3. Never claim document information that is not actually present in the retrieved context."
+            synthesis_prompt += "\n4. If information is NOT found in uploaded documents, clearly state that first."
+            synthesis_prompt += "\n5. If you know the answer from general knowledge, explicitly label it as general knowledge."
+            synthesis_prompt += "\n6. Use the format: 'This information was not found in the uploaded documents. Based on my general knowledge...'"
+            synthesis_prompt += "\n7. Never present general knowledge as if it came from uploaded documents."
+            synthesis_prompt += "\n8. If you are not confident in the answer, say: 'I could not find this information in the uploaded documents and I do not know the answer.'"
+            synthesis_prompt += "\n9. If neither the documents nor your knowledge provide a reliable answer, do not guess."
+
+            synthesis_prompt += "\n\nMEMORY RULES:"
+            synthesis_prompt += "\n1. If information is available in conversation memory or chat history, use it."
+            synthesis_prompt += "\n2. For memory-based questions, answer directly."
+            synthesis_prompt += "\n3. Do not claim memory information came from uploaded documents."
+            synthesis_prompt += "\n4. Example: If the user previously said 'My favorite color is blue', answer 'Your favorite color is blue.'"
+
+            synthesis_prompt += "\n\nFINAL RESPONSE REQUIREMENTS:"
+            synthesis_prompt += "\n- Be accurate."
+            synthesis_prompt += "\n- Be concise when appropriate."
+            synthesis_prompt += "\n- Be detailed only when the question requires it."
+            synthesis_prompt += "\n- Clearly distinguish document-based answers, memory-based answers, and general-knowledge answers."
+            synthesis_prompt += "\n- Never hallucinate."
+            synthesis_prompt += "\n- Never pretend information came from a source when it did not."
             
             messages = [
                 SystemMessage(content=self.system_prompt),
@@ -326,8 +391,20 @@ class ResponseSynthesisAgent(BaseAgent):
             
             # Collect sources
             sources = []
+            source_type = "unknown"
+
             if graphrag_result and graphrag_result.get("sources"):
                 sources.extend(graphrag_result["sources"])
+
+            # Determine source type
+            if context and "PREVIOUS CONVERSATION HISTORY" in context:
+                source_type = "memory"
+
+            elif document_found and len(sources) > 0:
+                source_type = "document"
+
+            elif not document_found:
+                source_type = "general_knowledge"
             
             # Collect used tools
             used_tools = []
@@ -363,6 +440,7 @@ class ResponseSynthesisAgent(BaseAgent):
             return {
                 "response": synthesized_response,
                 "sources": sources,
+                "source_type": source_type,
                 "thinking_steps": thinking_steps,
                 "used_tools": used_tools
             }

@@ -528,6 +528,11 @@ Auto-Optimization: {'Enabled' if stats['success_rate'] < 85 else 'Monitoring'}
     def _init_db(self):
         """Initialize the SQLite database for local message caching."""
         try:
+
+            logger.info("=" * 60)
+            logger.info(f"SQLITE PATH = {self.db_path}")
+            logger.info("=" * 60)
+
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
             
@@ -599,6 +604,13 @@ Auto-Optimization: {'Enabled' if stats['success_rate'] < 85 else 'Monitoring'}
             self._async_store_sqlite(chat_id, user_id, message, response, metadata)
             
             duration = time.time() - start_time
+            logger.info("=" * 60)
+            logger.info(f"STORE_INTERACTION CALLED")
+            logger.info(f"chat_id: {chat_id}")
+            logger.info(f"user_id: {user_id}")
+            logger.info(f"message: {message}")
+            logger.info(f"response: {response[:100] if response else ''}")
+            logger.info("=" * 60)
             logger.info(f"⚡ Stored interaction in {duration*1000:.1f}ms (memory cache updated)")
             
             return True
@@ -621,6 +633,11 @@ Auto-Optimization: {'Enabled' if stats['success_rate'] < 85 else 'Monitoring'}
                 (chat_id, user_id, message, response, metadata_json)
             )
             conn.commit()
+
+            logger.info(f"SQLITE INSERT SUCCESS")
+            logger.info(f"chat_id={chat_id}")
+            logger.info(f"user_id={user_id}")
+
             conn.close()
             
             logger.debug(f"✅ SQLite storage completed for chat {chat_id}")
@@ -726,7 +743,7 @@ Auto-Optimization: {'Enabled' if stats['success_rate'] < 85 else 'Monitoring'}
         result = self._execute_mongodb_operation(_mongo_history_operation, f"Get chat history for {chat_id}")
         return result if result is not None else []
     
-    def get_chat_history(self, chat_id: str, limit: int = None) -> List[Dict[str, Any]]:
+    def get_chat_history(self, chat_id: str, limit: int = None) -> List[Dict[str, Any]]:        
         """
         Ultra-fast chat history retrieval with aggressive caching and instant fallbacks.
         
@@ -737,6 +754,12 @@ Auto-Optimization: {'Enabled' if stats['success_rate'] < 85 else 'Monitoring'}
         Returns:
             List of message dictionaries in chronological order (oldest first)
         """
+        logger.info("=" * 60)
+        logger.info("GET_CHAT_HISTORY CALLED")
+        logger.info(f"chat_id: {chat_id}")
+        logger.info(f"limit: {limit}")
+        logger.info("=" * 60)
+
         if not chat_id:
             logger.warning("❌ Missing chat_id in get_chat_history")
             return []
@@ -751,11 +774,14 @@ Auto-Optimization: {'Enabled' if stats['success_rate'] < 85 else 'Monitoring'}
             cached_result = self.memory_cache[chat_id][-limit:] if limit else self.memory_cache[chat_id]
             self.last_access[chat_id] = time.time()
             duration = time.time() - start_time
+            logger.info(f"MEMORY CACHE HIT FOR CHAT: {chat_id}")
+            logger.info(f"CACHED MESSAGES: {len(self.memory_cache[chat_id])}")
             logger.info(f"⚡ Memory cache hit: {len(cached_result)} messages in {duration*1000:.1f}ms")
             return cached_result
         
         # FAST PATH 2: Quick SQLite lookup (< 10ms response time)
         sqlite_result = self._fast_sqlite_lookup(chat_id, limit)
+        logger.info(f"SQLITE RESULT COUNT: {len(sqlite_result) if sqlite_result else 0}")
         if sqlite_result is not None:
             duration = time.time() - start_time
             logger.info(f"⚡ Fast SQLite: {len(sqlite_result)} messages in {duration*1000:.1f}ms")
@@ -1099,3 +1125,4 @@ Auto-Optimization: {'Enabled' if stats['success_rate'] < 85 else 'Monitoring'}
 
 # Create a global instance
 chat_memory = ChatMemory() 
+print("MEMORY STATS:", chat_memory.get_stats())

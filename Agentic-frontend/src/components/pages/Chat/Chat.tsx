@@ -38,7 +38,7 @@ interface Thread {
 }
 
 // Component for rendering AI responses with proper structure - Moved outside to prevent re-creation
-const AIResponseComponent: React.FC<{ 
+const AIResponseComponent: React.FC<{
   aiData: {
     summary?: string;
     answer?: string;
@@ -57,12 +57,11 @@ const AIResponseComponent: React.FC<{
     <div className="space-y-4">
       {/* Summary Section - Minimalistic Collapsible */}
       {aiData.summary && aiData.summary !== "string" && (
-        <motion.div 
-          className={`relative rounded-lg border ${
-            isDarkMode 
-              ? 'bg-blue-900/5 border-blue-500/10 text-blue-100' 
-              : 'bg-blue-50/30 border-blue-200/30 text-blue-900'
-          } transition-all duration-300`}
+        <motion.div
+          className={`relative rounded-lg border ${isDarkMode
+            ? 'bg-blue-900/5 border-blue-500/10 text-blue-100'
+            : 'bg-blue-50/30 border-blue-200/30 text-blue-900'
+            } transition-all duration-300`}
           initial={{ opacity: 0, y: 5 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.1 }}
@@ -72,9 +71,8 @@ const AIResponseComponent: React.FC<{
           {/* Compact Header */}
           <div className="p-2 px-3">
             <div className="flex items-center gap-2">
-              <div className={`w-1.5 h-1.5 rounded-full ${
-                isDarkMode ? 'bg-blue-400' : 'bg-blue-500'
-              }`} />
+              <div className={`w-1.5 h-1.5 rounded-full ${isDarkMode ? 'bg-blue-400' : 'bg-blue-500'
+                }`} />
               <span className="text-xs font-medium opacity-70">
                 Summary
               </span>
@@ -91,9 +89,8 @@ const AIResponseComponent: React.FC<{
                 transition={{ duration: 0.2, ease: "easeInOut" }}
                 className="overflow-hidden"
               >
-                <div className={`px-3 pb-3 border-t ${
-                  isDarkMode ? 'border-blue-700/10' : 'border-blue-200/20'
-                }`}>
+                <div className={`px-3 pb-3 border-t ${isDarkMode ? 'border-blue-700/10' : 'border-blue-200/20'
+                  }`}>
                   <div className="pt-3">
                     <div className="prose prose-sm max-w-none dark:prose-invert text-sm leading-relaxed">
                       <ReactMarkdown remarkPlugins={[remarkGfm]}>
@@ -110,15 +107,14 @@ const AIResponseComponent: React.FC<{
 
       {/* Answer Section */}
       {aiData.answer && aiData.answer !== "string" && (
-        <motion.div 
+        <motion.div
           className="space-y-3"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.2 }}
         >
-          <div className={`prose max-w-none ${
-            isDarkMode ? 'prose-invert' : ''
-          } prose-headings:font-bold prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-p:leading-relaxed prose-p:mb-3`}>
+          <div className={`prose max-w-none ${isDarkMode ? 'prose-invert' : ''
+            } prose-headings:font-bold prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-p:leading-relaxed prose-p:mb-3`}>
             <ReactMarkdown remarkPlugins={[remarkGfm]}>
               {aiData.answer}
             </ReactMarkdown>
@@ -126,14 +122,13 @@ const AIResponseComponent: React.FC<{
         </motion.div>
       )}
 
-              {/* Source Documents Section - Minimalistic */}
+      {/* Source Documents Section - Minimalistic */}
       {sources.length > 0 && sources[0]?.document_title !== "string" && (
-        <motion.div 
-          className={`relative rounded-lg border ${
-            isDarkMode 
-              ? 'bg-emerald-900/5 border-emerald-500/10 text-emerald-100' 
-              : 'bg-emerald-50/30 border-emerald-200/30 text-emerald-900'
-          } transition-all duration-300`}
+        <motion.div
+          className={`relative rounded-lg border ${isDarkMode
+            ? 'bg-emerald-900/5 border-emerald-500/10 text-emerald-100'
+            : 'bg-emerald-50/30 border-emerald-200/30 text-emerald-900'
+            } transition-all duration-300`}
           initial={{ opacity: 0, y: 5 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.2 }}
@@ -143,9 +138,8 @@ const AIResponseComponent: React.FC<{
           {/* Compact Header */}
           <div className="p-2 px-3">
             <div className="flex items-center gap-2">
-              <div className={`w-1.5 h-1.5 rounded-full ${
-                isDarkMode ? 'bg-emerald-400' : 'bg-emerald-500'
-              }`} />
+              <div className={`w-1.5 h-1.5 rounded-full ${isDarkMode ? 'bg-emerald-400' : 'bg-emerald-500'
+                }`} />
               <span className="text-xs font-medium opacity-70">
                 {sources.length} source{sources.length > 1 ? 's' : ''}
               </span>
@@ -162,9 +156,8 @@ const AIResponseComponent: React.FC<{
                 transition={{ duration: 0.2, ease: "easeInOut" }}
                 className="overflow-hidden"
               >
-                <div className={`px-3 pb-2 border-t ${
-                  isDarkMode ? 'border-emerald-700/10' : 'border-emerald-200/20'
-                }`}>
+                <div className={`px-3 pb-2 border-t ${isDarkMode ? 'border-emerald-700/10' : 'border-emerald-200/20'
+                  }`}>
                   <div className="pt-2 flex flex-wrap gap-1.5">
                     {sources.map((source: any, index: number) => (
                       <motion.div
@@ -172,18 +165,16 @@ const AIResponseComponent: React.FC<{
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: index * 0.03 }}
-                        className={`inline-flex items-center gap-1.5 px-2 py-1 rounded text-xs cursor-pointer transition-all ${
-                          isDarkMode
-                            ? 'bg-emerald-800/20 hover:bg-emerald-700/30 text-emerald-200 border border-emerald-700/20'
-                            : 'bg-white/70 hover:bg-white text-emerald-700 border border-emerald-200/50 hover:border-emerald-300'
-                        }`}
+                        className={`inline-flex items-center gap-1.5 px-2 py-1 rounded text-xs cursor-pointer transition-all ${isDarkMode
+                          ? 'bg-emerald-800/20 hover:bg-emerald-700/30 text-emerald-200 border border-emerald-700/20'
+                          : 'bg-white/70 hover:bg-white text-emerald-700 border border-emerald-200/50 hover:border-emerald-300'
+                          }`}
                         whileHover={{ scale: 1.02 }}
-                                                  onClick={() => onSourceClick?.(source)}
+                        onClick={() => onSourceClick?.(source)}
                       >
-                        <div className={`w-1 h-1 rounded-full ${
-                          source.relevance >= 0.8 ? 'bg-green-500' :
+                        <div className={`w-1 h-1 rounded-full ${source.relevance >= 0.8 ? 'bg-green-500' :
                           source.relevance >= 0.6 ? 'bg-yellow-500' : 'bg-orange-500'
-                        }`} />
+                          }`} />
                         <span className="font-medium truncate max-w-[120px]">
                           {source.document_title}
                         </span>
@@ -202,10 +193,9 @@ const AIResponseComponent: React.FC<{
 
       {/* Related Links Section */}
       {aiData.related_links && aiData.related_links.length > 0 && aiData.related_links[0] !== "string" && (
-        <motion.div 
-          className={`p-4 rounded-lg ${
-            isDarkMode ? 'bg-purple-900/20 border border-purple-500/20' : 'bg-purple-50 border border-purple-200/50'
-          }`}
+        <motion.div
+          className={`p-4 rounded-lg ${isDarkMode ? 'bg-purple-900/20 border border-purple-500/20' : 'bg-purple-50 border border-purple-200/50'
+            }`}
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.4 }}
@@ -214,9 +204,8 @@ const AIResponseComponent: React.FC<{
             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M12.586 4.586a2 2 0 112.828 2.828l-3 3a2 2 0 01-2.828 0 1 1 0 00-1.414 1.414 4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5a1 1 0 101.414 1.414l1.5-1.5zm-5 5a2 2 0 012.828 0 1 1 0 101.414-1.414 4 4 0 00-5.656 0l-3 3a4 4 0 105.656 5.656l1.5-1.5a1 1 0 10-1.414-1.414l-1.5 1.5a2 2 0 11-2.828-2.828l3-3z" clipRule="evenodd" />
             </svg>
-            <h4 className={`font-semibold text-sm ${
-              isDarkMode ? 'text-purple-200' : 'text-purple-800'
-            }`}>Related Links</h4>
+            <h4 className={`font-semibold text-sm ${isDarkMode ? 'text-purple-200' : 'text-purple-800'
+              }`}>Related Links</h4>
           </div>
           <div className="flex flex-wrap gap-2">
             {aiData.related_links.map((link: string, index: number) => (
@@ -225,11 +214,10 @@ const AIResponseComponent: React.FC<{
                 href={link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium transition-all hover:scale-105 ${
-                  isDarkMode 
-                    ? 'bg-purple-600 hover:bg-purple-500 text-white' 
-                    : 'bg-purple-100 hover:bg-purple-200 text-purple-800'
-                }`}
+                className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium transition-all hover:scale-105 ${isDarkMode
+                  ? 'bg-purple-600 hover:bg-purple-500 text-white'
+                  : 'bg-purple-100 hover:bg-purple-200 text-purple-800'
+                  }`}
               >
                 <span className="truncate max-w-[200px]">{link}</span>
                 <svg className="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -334,20 +322,35 @@ const Chat: React.FC = () => {
 
           // Save final messages to thread and localStorage
           setMessages((prevMessages) => {
+            const updatedMessages = prevMessages.map((msg) => {
+              if (msg.id === aiResponseId) {
+                return {
+                  ...msg,
+                  timestamp: new Date().toISOString()
+                };
+              }
+              return msg;
+            });
+
             if (threadToUpdate) {
               const threads = JSON.parse(localStorage.getItem("threads") || "[]");
-              const threadIndex = threads.findIndex((t: Thread) => t.id === threadToUpdate.id);
+              const threadIndex = threads.findIndex(
+                (t: Thread) => t.id === threadToUpdate.id
+              );
+
               if (threadIndex !== -1) {
                 const updatedThread = {
                   ...threadToUpdate,
-                  messages: prevMessages,
+                  messages: updatedMessages,
                 };
+
                 threads[threadIndex] = updatedThread;
                 setCurrentThread(updatedThread);
                 localStorage.setItem("threads", JSON.stringify(threads));
               }
             }
-            return prevMessages;
+
+            return updatedMessages;
           });
 
           if (onComplete) onComplete();
@@ -394,27 +397,27 @@ const Chat: React.FC = () => {
 
   const formatRelativeTime = (timestamp: string | Date) => {
     if (!timestamp) return 'Unknown';
-    
+
     // Parse the ISO string properly (handles timezone offset)
     const date = new Date(timestamp);
     const now = new Date();
-    
+
     // Check if date is valid
     if (isNaN(date.getTime())) {
       return 'Invalid date';
     }
-    
+
     const diffInMilliseconds = now.getTime() - date.getTime();
     const diffInSeconds = Math.floor(diffInMilliseconds / 1000);
     const diffInMinutes = Math.floor(diffInSeconds / 60);
     const diffInHours = Math.floor(diffInMinutes / 60);
     const diffInDays = Math.floor(diffInHours / 24);
-    
+
     // Handle future dates (in case of clock skew)
     if (diffInSeconds < 0) {
       return 'just now';
     }
-    
+
     if (diffInSeconds < 60) {
       return 'just now';
     } else if (diffInMinutes < 60) {
@@ -439,13 +442,13 @@ const Chat: React.FC = () => {
   // Transform ChatSubThread array to Messages format
   const transformSubThreadsToMessages = (subThreads: ChatSubThread[]): Message[] => {
     const messages: Message[] = [];
-    
+
     // Sort sub-threads by creation date in ascending order (oldest first)
     // to ensure messages are displayed chronologically
     const sortedSubThreads = [...subThreads].sort((a, b) => {
       return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
     });
-    
+
     sortedSubThreads.forEach((subThread, index) => {
       // Add user query message
       messages.push({
@@ -454,7 +457,7 @@ const Chat: React.FC = () => {
         timestamp: subThread.created_at,
         isUser: true,
       });
-      
+
       // Add AI response message with structured data
       messages.push({
         id: `${subThread.chat_id}-${index}-answer`,
@@ -471,7 +474,7 @@ const Chat: React.FC = () => {
         }
       });
     });
-    
+
     return messages;
   };
 
@@ -479,18 +482,18 @@ const Chat: React.FC = () => {
   const fetchThreadData = async (chatId: string) => {
     try {
       setIsLoading(true);
-      
+
       // Fetch both thread details and sub-threads in parallel
       const [threadResponse, subThreadsResponse] = await Promise.all([
         chatApi.getThreadById(chatId),
         chatApi.getSubThreads(chatId)
       ]);
-      
-      if (threadResponse.data && threadResponse.status === 200 && 
-          subThreadsResponse.data && subThreadsResponse.status === 200) {
+
+      if (threadResponse.data && threadResponse.status === 200 &&
+        subThreadsResponse.data && subThreadsResponse.status === 200) {
         const threadData = threadResponse.data;
         const subThreads = subThreadsResponse.data;
-        
+
         // Create thread object for current state using API data
         const thread: Thread = {
           id: chatId,
@@ -499,7 +502,7 @@ const Chat: React.FC = () => {
           timestamp: threadData.created_at,
           messages: transformSubThreadsToMessages(subThreads)
         };
-        
+
         setCurrentThread(thread);
         setMessages(thread.messages || []);
       } else {
@@ -551,7 +554,7 @@ const Chat: React.FC = () => {
 
           // Update thread in localStorage
           thread.messages = updatedMessages;
-          const updatedThreads = threads.map((t: Thread) => 
+          const updatedThreads = threads.map((t: Thread) =>
             t.id === threadId ? thread : t
           );
           localStorage.setItem('threads', JSON.stringify(updatedThreads));
@@ -627,7 +630,7 @@ Related Links:
 - Kaggle Learn - https://www.kaggle.com/learn
 - Google AI Education - https://ai.google/education/`;
     }
-    
+
     return `Answer:
 I apologize, but I don't have specific information about that topic. Could you please ask something else or rephrase your question?
 
@@ -639,16 +642,15 @@ Related Links:
   // Separate component for source documents in formatMessage with isolated state
   const SourceDocumentsSection: React.FC<{ documents: any[] }> = React.memo(({ documents }) => {
     const [localExpanded, setLocalExpanded] = React.useState(false);
-    
+
     if (!documents || documents.length === 0) return null;
 
     return (
-      <motion.div 
-        className={`relative rounded-lg border ${
-          isDarkMode 
-            ? 'bg-emerald-900/5 border-emerald-500/10 text-emerald-100' 
-            : 'bg-emerald-50/30 border-emerald-200/30 text-emerald-900'
-        } transition-all duration-300`}
+      <motion.div
+        className={`relative rounded-lg border ${isDarkMode
+          ? 'bg-emerald-900/5 border-emerald-500/10 text-emerald-100'
+          : 'bg-emerald-50/30 border-emerald-200/30 text-emerald-900'
+          } transition-all duration-300`}
         initial={{ opacity: 0, y: 5 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.2 }}
@@ -658,9 +660,8 @@ Related Links:
         {/* Compact Header */}
         <div className="p-2 px-3">
           <div className="flex items-center gap-2">
-            <div className={`w-1.5 h-1.5 rounded-full ${
-              isDarkMode ? 'bg-emerald-400' : 'bg-emerald-500'
-            }`} />
+            <div className={`w-1.5 h-1.5 rounded-full ${isDarkMode ? 'bg-emerald-400' : 'bg-emerald-500'
+              }`} />
             <span className="text-xs font-medium opacity-70">
               {documents.length} source{documents.length > 1 ? 's' : ''}
             </span>
@@ -677,9 +678,8 @@ Related Links:
               transition={{ duration: 0.2, ease: "easeInOut" }}
               className="overflow-hidden"
             >
-              <div className={`px-3 pb-2 border-t ${
-                isDarkMode ? 'border-emerald-700/10' : 'border-emerald-200/20'
-              }`}>
+              <div className={`px-3 pb-2 border-t ${isDarkMode ? 'border-emerald-700/10' : 'border-emerald-200/20'
+                }`}>
                 <div className="pt-2 flex flex-wrap gap-1.5">
                   {documents.map((doc, index) => (
                     <motion.div
@@ -687,20 +687,18 @@ Related Links:
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: index * 0.03 }}
-                      className={`inline-flex items-center gap-1.5 px-2 py-1 rounded text-xs cursor-pointer transition-all ${
-                        isDarkMode
-                          ? 'bg-emerald-800/20 hover:bg-emerald-700/30 text-emerald-200 border border-emerald-700/20'
-                          : 'bg-white/70 hover:bg-white text-emerald-700 border border-emerald-200/50 hover:border-emerald-300'
-                      }`}
+                      className={`inline-flex items-center gap-1.5 px-2 py-1 rounded text-xs cursor-pointer transition-all ${isDarkMode
+                        ? 'bg-emerald-800/20 hover:bg-emerald-700/30 text-emerald-200 border border-emerald-700/20'
+                        : 'bg-white/70 hover:bg-white text-emerald-700 border border-emerald-200/50 hover:border-emerald-300'
+                        }`}
                       whileHover={{ scale: 1.02 }}
                       onClick={() => {
                         setSelectedDocument(doc);
                         setIsModalOpen(true);
                       }}
                     >
-                      <div className={`w-1 h-1 rounded-full ${
-                        isDarkMode ? 'bg-emerald-400' : 'bg-emerald-500'
-                      }`} />
+                      <div className={`w-1 h-1 rounded-full ${isDarkMode ? 'bg-emerald-400' : 'bg-emerald-500'
+                        }`} />
                       <span className="font-medium truncate max-w-[120px]">
                         Doc {index + 1}
                       </span>
@@ -711,8 +709,8 @@ Related Links:
             </motion.div>
           )}
         </AnimatePresence>
-              </motion.div>
-      );
+      </motion.div>
+    );
   });
 
   const formatMessage = (content: string, sourceObjects?: any[]) => {
@@ -770,7 +768,7 @@ Related Links:
     // Process each line to identify sections
     for (const line of lines) {
       const lowerLine = line.toLowerCase().trim();
-      
+
       if (lowerLine.startsWith('summary:') || lowerLine === 'summary') {
         processSectionContent(currentSection, currentContent);
         currentSection = 'summary';
@@ -812,21 +810,19 @@ Related Links:
       <div className="space-y-4">
         {/* Summary Section - Modern Minimalistic */}
         {sections.summary && (
-          <motion.div 
-            className={`relative p-4 rounded-xl border ${
-              isDarkMode 
-                ? 'bg-gradient-to-r from-blue-900/10 to-purple-900/10 border-blue-500/20 text-blue-100' 
-                : 'bg-gradient-to-r from-blue-50/80 to-purple-50/80 border-blue-200/50 text-blue-900'
-            } backdrop-blur-sm`}
+          <motion.div
+            className={`relative p-4 rounded-xl border ${isDarkMode
+              ? 'bg-gradient-to-r from-blue-900/10 to-purple-900/10 border-blue-500/20 text-blue-100'
+              : 'bg-gradient-to-r from-blue-50/80 to-purple-50/80 border-blue-200/50 text-blue-900'
+              } backdrop-blur-sm`}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.1 }}
           >
             {/* Floating icon */}
-            <motion.div 
-              className={`absolute -top-2 -left-2 p-2 rounded-lg ${
-                isDarkMode ? 'bg-blue-600' : 'bg-blue-500'
-              } shadow-lg`}
+            <motion.div
+              className={`absolute -top-2 -left-2 p-2 rounded-lg ${isDarkMode ? 'bg-blue-600' : 'bg-blue-500'
+                } shadow-lg`}
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ type: "spring", stiffness: 300, delay: 0.2 }}
@@ -835,9 +831,9 @@ Related Links:
                 <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
               </svg>
             </motion.div>
-            
+
             <div className="pl-4">
-              <motion.h4 
+              <motion.h4
                 className="font-medium text-xs uppercase tracking-wide mb-2 opacity-70"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 0.7 }}
@@ -845,7 +841,7 @@ Related Links:
               >
                 Summary
               </motion.h4>
-              <motion.p 
+              <motion.p
                 className="text-sm leading-relaxed"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -899,16 +895,14 @@ Related Links:
 
         {/* Related Links Section */}
         {sections.relatedLinks.length > 0 && (
-          <div className={`p-4 rounded-lg ${
-            isDarkMode ? 'bg-purple-900/20' : 'bg-purple-50'
-          }`}>
+          <div className={`p-4 rounded-lg ${isDarkMode ? 'bg-purple-900/20' : 'bg-purple-50'
+            }`}>
             <div className="flex items-center gap-2 mb-3">
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M12.586 4.586a2 2 0 112.828 2.828l-3 3a2 2 0 01-2.828 0 1 1 0 00-1.414 1.414 4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5a1 1 0 101.414 1.414l1.5-1.5zm-5 5a2 2 0 012.828 0 1 1 0 101.414-1.414 4 4 0 00-5.656 0l-3 3a4 4 0 105.656 5.656l1.5-1.5a1 1 0 10-1.414-1.414l-1.5 1.5a2 2 0 11-2.828-2.828l3-3z" clipRule="evenodd" />
               </svg>
-              <h4 className={`font-semibold text-sm ${
-                isDarkMode ? 'text-purple-200' : 'text-purple-800'
-              }`}>Related Links</h4>
+              <h4 className={`font-semibold text-sm ${isDarkMode ? 'text-purple-200' : 'text-purple-800'
+                }`}>Related Links</h4>
             </div>
             <div className="flex flex-wrap gap-2">
               {sections.relatedLinks.map((link, index) => (
@@ -917,11 +911,10 @@ Related Links:
                   href={link.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium transition-all hover:scale-105 ${
-                    isDarkMode 
-                      ? 'bg-purple-600 hover:bg-purple-500 text-white' 
-                      : 'bg-purple-100 hover:bg-purple-200 text-purple-800'
-                  }`}
+                  className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium transition-all hover:scale-105 ${isDarkMode
+                    ? 'bg-purple-600 hover:bg-purple-500 text-white'
+                    : 'bg-purple-100 hover:bg-purple-200 text-purple-800'
+                    }`}
                 >
                   <span>{link.title}</span>
                   <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -937,7 +930,7 @@ Related Links:
   };
 
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     const chatId = searchParams.get('chatId');
     const threadId = searchParams.get('threadId'); // For backwards compatibility
@@ -956,18 +949,18 @@ Related Links:
     if (chatId) {
       // New API-based thread loading
       fetchThreadData(chatId);
-      
+
       // Handle automatic prompt submission for new threads
       if (prompt && prompt.trim()) {
         const promptKey = `${chatId}-${prompt}`;
         console.log('Processing prompt:', promptKey, 'Already processed:', processedPromptsRef.current.has(promptKey), 'In progress:', autoSubmitInProgressRef.current.has(promptKey));
-        
+
         // Prevent duplicate processing of the same prompt
         if (!processedPromptsRef.current.has(promptKey) && !autoSubmitInProgressRef.current.has(promptKey)) {
           processedPromptsRef.current.add(promptKey);
           autoSubmitInProgressRef.current.add(promptKey);
           console.log('Adding prompt to processed list:', promptKey);
-          
+
           setTimeout(async () => {
             // Show user message and AI response placeholder immediately
             const userMessage: Message = {
@@ -1030,7 +1023,7 @@ Related Links:
     } else if (threadId) {
       // Legacy localStorage-based thread loading
       loadFromLocalStorage(threadId);
-      
+
       // Handle prompt for new threads
       if (prompt) {
         const threads = JSON.parse(localStorage.getItem('threads') || '[]');
@@ -1053,7 +1046,7 @@ Related Links:
 
             // Update thread in localStorage
             thread.messages = updatedMessages;
-            const updatedThreads = threads.map((t: Thread) => 
+            const updatedThreads = threads.map((t: Thread) =>
               t.id === threadId ? thread : t
             );
             localStorage.setItem('threads', JSON.stringify(updatedThreads));
@@ -1106,10 +1099,10 @@ Related Links:
       try {
         const threadTitle = message.substring(0, 50) + (message.length > 50 ? '...' : '');
         const response = await chatApi.createNewThread(threadTitle, user.id);
-        
+
         if (response.data && response.status === 201) {
           const apiThread = response.data;
-          
+
           // Create thread object with the API response data
           const newThread: Thread = {
             id: apiThread.chat_id, // Use the chat_id returned from API
@@ -1118,14 +1111,14 @@ Related Links:
             timestamp: apiThread.created_at,
             messages: [newMessage]
           };
-          
+
           activeThread = newThread;
           setCurrentThread(newThread);
           setMessages([newMessage]);
-          
+
           console.log('New thread created via API:', apiThread, 'Mode:', responseMode);
           toast.success('New chat created!');
-          
+
           // Save to localStorage for backward compatibility
           const threads = JSON.parse(localStorage.getItem('threads') || '[]');
           threads.unshift(newThread);
@@ -1199,7 +1192,7 @@ Related Links:
       }
     } catch (error) {
       console.error('Failed to get AI response:', error);
-      
+
       // Fallback to mock response on error
       const aiResponse: Message = {
         id: (Date.now() + 1).toString(),
@@ -1207,7 +1200,7 @@ Related Links:
         timestamp: getCurrentDateTime(),
         isUser: false,
       };
-      
+
       const finalMessages = [...(activeThread ? activeThread.messages || [] : []), aiResponse];
       setMessages(finalMessages);
       setIsGenerating(false);
@@ -1237,17 +1230,16 @@ Related Links:
   return (
     <div className={`fixed inset-0 ${isDarkMode ? 'bg-[#282a36]' : 'bg-white'} overflow-hidden flex flex-col`}>
       {/* Thread Title Header - Modern Aesthetic - Always Show */}
-      <motion.div 
-        className={`border-b backdrop-blur-sm ${
-          isDarkMode 
-            ? 'border-gray-700/30 bg-[#282a36]/80' 
-            : 'border-gray-200/50 bg-white/80'
-        }`}
+      <motion.div
+        className={`border-b backdrop-blur-sm ${isDarkMode
+          ? 'border-gray-700/30 bg-[#282a36]/80'
+          : 'border-gray-200/50 bg-white/80'
+          }`}
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
       >
-        <motion.div 
+        <motion.div
           className="px-4 md:px-6 py-5"
           animate={{
             marginLeft: isSidebarOpen ? "16rem" : "4rem",
@@ -1270,33 +1262,30 @@ Related Links:
                 className="flex items-center gap-3 mb-2"
               >
                 {/* Chat indicator */}
-                <motion.div 
-                  className={`p-2 rounded-lg ${
-                    isDarkMode ? 'bg-purple-600/20' : 'bg-purple-100'
-                  } shadow-sm`}
+                <motion.div
+                  className={`p-2 rounded-lg ${isDarkMode ? 'bg-purple-600/20' : 'bg-purple-100'
+                    } shadow-sm`}
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ type: "spring", delay: 0.3, stiffness: 300 }}
                 >
-                  <svg className={`w-4 h-4 ${
-                    isDarkMode ? 'text-purple-400' : 'text-purple-600'
-                  }`} fill="currentColor" viewBox="0 0 20 20">
+                  <svg className={`w-4 h-4 ${isDarkMode ? 'text-purple-400' : 'text-purple-600'
+                    }`} fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clipRule="evenodd" />
                   </svg>
                 </motion.div>
-                
+
                 <div className="flex-1 min-w-0">
-                  <motion.h1 
-                    className={`text-lg font-semibold truncate ${
-                      isDarkMode ? 'text-gray-100' : 'text-gray-900'
-                    }`}
+                  <motion.h1
+                    className={`text-lg font-semibold truncate ${isDarkMode ? 'text-gray-100' : 'text-gray-900'
+                      }`}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.4, duration: 0.3 }}
                   >
                     {currentThread ? currentThread.title : 'New Chat'}
                   </motion.h1>
-                  
+
                   <motion.div
                     className="flex items-center gap-3 mt-1"
                     initial={{ opacity: 0, y: 10 }}
@@ -1306,33 +1295,28 @@ Related Links:
                     {currentThread ? (
                       <>
                         <div className="flex items-center gap-1.5">
-                          <svg className={`w-3 h-3 ${
-                            isDarkMode ? 'text-gray-500' : 'text-gray-400'
-                          }`} fill="currentColor" viewBox="0 0 20 20">
+                          <svg className={`w-3 h-3 ${isDarkMode ? 'text-gray-500' : 'text-gray-400'
+                            }`} fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
                           </svg>
-                          <span className={`text-xs ${
-                            isDarkMode ? 'text-gray-400' : 'text-gray-500'
-                          }`}>
+                          <span className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'
+                            }`}>
                             Created {formatRelativeTime(currentThread.timestamp)}
                           </span>
                         </div>
-                        
+
                         {messages.length > 0 && (
                           <>
-                            <div className={`w-1 h-1 rounded-full ${
-                              isDarkMode ? 'bg-gray-600' : 'bg-gray-300'
-                            }`} />
+                            <div className={`w-1 h-1 rounded-full ${isDarkMode ? 'bg-gray-600' : 'bg-gray-300'
+                              }`} />
                             <div className="flex items-center gap-1.5">
-                              <svg className={`w-3 h-3 ${
-                                isDarkMode ? 'text-gray-500' : 'text-gray-400'
-                              }`} fill="currentColor" viewBox="0 0 20 20">
+                              <svg className={`w-3 h-3 ${isDarkMode ? 'text-gray-500' : 'text-gray-400'
+                                }`} fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z" />
                                 <path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z" />
                               </svg>
-                              <span className={`text-xs ${
-                                isDarkMode ? 'text-gray-400' : 'text-gray-500'
-                              }`}>
+                              <span className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'
+                                }`}>
                                 Last activity {formatRelativeTime(messages[messages.length - 1]?.timestamp)}
                               </span>
                             </div>
@@ -1341,14 +1325,12 @@ Related Links:
                       </>
                     ) : (
                       <div className="flex items-center gap-1.5">
-                        <svg className={`w-3 h-3 ${
-                          isDarkMode ? 'text-gray-500' : 'text-gray-400'
-                        }`} fill="currentColor" viewBox="0 0 20 20">
+                        <svg className={`w-3 h-3 ${isDarkMode ? 'text-gray-500' : 'text-gray-400'
+                          }`} fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M18 5v8a2 2 0 01-2 2h-5l-5 4v-4H4a2 2 0 01-2-2V5a2 2 0 012-2h12a2 2 0 012 2zM7 8H5v2h2V8zm2 0h2v2H9V8zm6 0h-2v2h2V8z" clipRule="evenodd" />
                         </svg>
-                        <span className={`text-xs ${
-                          isDarkMode ? 'text-gray-400' : 'text-gray-500'
-                        }`}>
+                        <span className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'
+                          }`}>
                           Start a conversation below
                         </span>
                       </div>
@@ -1357,7 +1339,7 @@ Related Links:
                 </div>
               </motion.div>
             </div>
-            
+
             {/* Status indicator */}
             <motion.div
               className="flex items-center gap-2 ml-4"
@@ -1365,30 +1347,28 @@ Related Links:
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.6, duration: 0.3 }}
             >
-              <motion.div 
-                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
-                  isDarkMode 
-                    ? 'bg-green-900/30 text-green-400 border border-green-700/30' 
-                    : 'bg-green-50 text-green-700 border border-green-200'
-                }`}
-                animate={{ 
+              <motion.div
+                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${isDarkMode
+                  ? 'bg-green-900/30 text-green-400 border border-green-700/30'
+                  : 'bg-green-50 text-green-700 border border-green-200'
+                  }`}
+                animate={{
                   scale: [1, 1.02, 1],
                 }}
-                transition={{ 
-                  duration: 3, 
+                transition={{
+                  duration: 3,
                   repeat: Infinity,
                   ease: "easeInOut"
                 }}
               >
-                <motion.div 
-                  className={`w-1.5 h-1.5 rounded-full ${
-                    isDarkMode ? 'bg-green-400' : 'bg-green-500'
-                  }`}
-                  animate={{ 
+                <motion.div
+                  className={`w-1.5 h-1.5 rounded-full ${isDarkMode ? 'bg-green-400' : 'bg-green-500'
+                    }`}
+                  animate={{
                     opacity: [0.4, 1, 0.4],
                   }}
-                  transition={{ 
-                    duration: 2, 
+                  transition={{
+                    duration: 2,
                     repeat: Infinity,
                     ease: "easeInOut"
                   }}
@@ -1401,7 +1381,7 @@ Related Links:
       </motion.div>
 
       {/* Main Messages Container with Sidebar Margin */}
-      <motion.div 
+      <motion.div
         className="flex-1 overflow-hidden"
         animate={{
           marginLeft: isSidebarOpen ? "16rem" : "4rem",
@@ -1416,32 +1396,29 @@ Related Links:
         }}
       >
         <div className="h-full overflow-y-auto">
-            <div className="px-4 md:px-6 py-4 space-y-4 pb-32">
-              {/* Loading state for fetching thread data */}
-              {isLoading && (
-                <motion.div
-                  className="w-full"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <div className={`flex items-center gap-2 mb-2 ${
-                    isDarkMode ? 'text-gray-400' : 'text-gray-600'
+          <div className="px-4 md:px-6 py-4 space-y-4 pb-32">
+            {/* Loading state for fetching thread data */}
+            {isLoading && (
+              <motion.div
+                className="w-full"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <div className={`flex items-center gap-2 mb-2 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'
                   }`}>
-                    <div className={`w-2 h-2 rounded-full ${
-                      isDarkMode ? 'bg-gray-400' : 'bg-gray-600'
+                  <div className={`w-2 h-2 rounded-full ${isDarkMode ? 'bg-gray-400' : 'bg-gray-600'
                     }`} />
-                    <span className="text-sm font-medium">Loading conversation...</span>
-                  </div>
-                  <div className={`pl-4 border-l-2 ${
-                    isDarkMode ? 'border-gray-400/30' : 'border-gray-600/30'
+                  <span className="text-sm font-medium">Loading conversation...</span>
+                </div>
+                <div className={`pl-4 border-l-2 ${isDarkMode ? 'border-gray-400/30' : 'border-gray-600/30'
                   }`}>
-                    <SkeletonLoader variant="message" />
-                  </div>
-                </motion.div>
-              )}
-              
-              {!isLoading && messages.map((message, index) => (
+                  <SkeletonLoader variant="message" />
+                </div>
+              </motion.div>
+            )}
+
+            {!isLoading && messages.map((message, index) => (
               <motion.div
                 key={message.id}
                 className="w-full"
@@ -1455,35 +1432,31 @@ Related Links:
                 }}
               >
                 {/* Message Header */}
-                <div className={`flex items-center gap-2 mb-2 ${
-                  message.isUser 
-                    ? (isDarkMode ? 'text-blue-400' : 'text-blue-600')
-                    : (isDarkMode ? 'text-green-400' : 'text-green-600')
-                }`}>
-                  <div className={`w-2 h-2 rounded-full ${
-                    message.isUser 
-                      ? (isDarkMode ? 'bg-blue-400' : 'bg-blue-600')
-                      : (isDarkMode ? 'bg-green-400' : 'bg-green-600')
-                  }`} />
+                <div className={`flex items-center gap-2 mb-2 ${message.isUser
+                  ? (isDarkMode ? 'text-blue-400' : 'text-blue-600')
+                  : (isDarkMode ? 'text-green-400' : 'text-green-600')
+                  }`}>
+                  <div className={`w-2 h-2 rounded-full ${message.isUser
+                    ? (isDarkMode ? 'bg-blue-400' : 'bg-blue-600')
+                    : (isDarkMode ? 'bg-green-400' : 'bg-green-600')
+                    }`} />
                   <span className="text-sm font-medium">
                     {message.isUser ? 'You' : 'AI Assistant'}
                   </span>
                   <span className={`text-xs ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`}>
                     {new Date(message.timestamp).toLocaleTimeString()}
                   </span>
-                  
-                                    {/* Execution Time - Only show for AI responses and if enabled in settings */}
+
+                  {/* Execution Time - Only show for AI responses and if enabled in settings */}
                   {!message.isUser && message.execution_time !== undefined && message.execution_time > 0 && showExecutionTime && (
                     <>
-                      <div className={`w-1 h-1 rounded-full ${
-                        isDarkMode ? 'bg-gray-600' : 'bg-gray-300'
-                      }`} />
+                      <div className={`w-1 h-1 rounded-full ${isDarkMode ? 'bg-gray-600' : 'bg-gray-300'
+                        }`} />
                       <motion.div
-                        className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-xs ${
-                          isDarkMode 
-                            ? 'bg-amber-900/20 text-amber-400 border border-amber-700/30' 
-                            : 'bg-amber-50 text-amber-700 border border-amber-200'
-                        }`}
+                        className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-xs ${isDarkMode
+                          ? 'bg-amber-900/20 text-amber-400 border border-amber-700/30'
+                          : 'bg-amber-50 text-amber-700 border border-amber-200'
+                          }`}
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.3, delay: 0.2 }}
@@ -1493,7 +1466,7 @@ Related Links:
                           <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
                         </svg>
                         <span className="font-medium">
-                          {message.execution_time < 1 
+                          {message.execution_time < 1
                             ? `${(message.execution_time * 1000).toFixed(0)}ms`
                             : `${message.execution_time.toFixed(1)}s`
                           }
@@ -1504,19 +1477,17 @@ Related Links:
                 </div>
 
                 {/* Message Content */}
-                <div className={`pl-4 border-l-2 ${
-                  message.isUser 
-                    ? (isDarkMode ? 'border-blue-400/30' : 'border-blue-600/30')
-                    : (isDarkMode ? 'border-green-400/30' : 'border-green-600/30')
-                }`}>
-                  <div className={`leading-relaxed ${
-                    isDarkMode ? 'text-gray-100' : 'text-gray-900'
+                <div className={`pl-4 border-l-2 ${message.isUser
+                  ? (isDarkMode ? 'border-blue-400/30' : 'border-blue-600/30')
+                  : (isDarkMode ? 'border-green-400/30' : 'border-green-600/30')
                   }`}>
+                  <div className={`leading-relaxed ${isDarkMode ? 'text-gray-100' : 'text-gray-900'
+                    }`}>
                     {message.isUser ? (
                       <p className="whitespace-pre-wrap">{message.content}</p>
                     ) : message.aiResponseData ? (
-                      <AIResponseComponent 
-                        aiData={message.aiResponseData} 
+                      <AIResponseComponent
+                        aiData={message.aiResponseData}
                         sourceObjects={message.sourceObjects}
                         isDarkMode={isDarkMode}
                         onSourceClick={handleSourceClick}
@@ -1531,9 +1502,8 @@ Related Links:
 
                 {/* Separator Line */}
                 {index < messages.length - 1 && (
-                  <div className={`mt-6 border-b ${
-                    isDarkMode ? 'border-gray-700/50' : 'border-gray-200/50'
-                  }`} />
+                  <div className={`mt-6 border-b ${isDarkMode ? 'border-gray-700/50' : 'border-gray-200/50'
+                    }`} />
                 )}
               </motion.div>
             ))}
@@ -1549,32 +1519,27 @@ Related Links:
                   transition={{ duration: 0.3 }}
                 >
                   {/* AI Header */}
-                  <div className={`flex items-center gap-2 mb-2 ${
-                    isDarkMode ? 'text-green-400' : 'text-green-600'
-                  }`}>
-                    <div className={`w-2 h-2 rounded-full ${
-                      isDarkMode ? 'bg-green-400' : 'bg-green-600'
-                    }`} />
+                  <div className={`flex items-center gap-2 mb-2 ${isDarkMode ? 'text-green-400' : 'text-green-600'
+                    }`}>
+                    <div className={`w-2 h-2 rounded-full ${isDarkMode ? 'bg-green-400' : 'bg-green-600'
+                      }`} />
                     <span className="text-sm font-medium">AI Assistant</span>
                     <div className="flex items-center gap-1 ml-2">
                       <motion.div
-                        className={`w-1 h-1 rounded-full ${
-                          isDarkMode ? 'bg-green-400' : 'bg-green-600'
-                        }`}
+                        className={`w-1 h-1 rounded-full ${isDarkMode ? 'bg-green-400' : 'bg-green-600'
+                          }`}
                         animate={{ scale: [1, 1.2, 1] }}
                         transition={{ duration: 0.8, repeat: Infinity, delay: 0 }}
                       />
                       <motion.div
-                        className={`w-1 h-1 rounded-full ${
-                          isDarkMode ? 'bg-green-400' : 'bg-green-600'
-                        }`}
+                        className={`w-1 h-1 rounded-full ${isDarkMode ? 'bg-green-400' : 'bg-green-600'
+                          }`}
                         animate={{ scale: [1, 1.2, 1] }}
                         transition={{ duration: 0.8, repeat: Infinity, delay: 0.2 }}
                       />
                       <motion.div
-                        className={`w-1 h-1 rounded-full ${
-                          isDarkMode ? 'bg-green-400' : 'bg-green-600'
-                        }`}
+                        className={`w-1 h-1 rounded-full ${isDarkMode ? 'bg-green-400' : 'bg-green-600'
+                          }`}
                         animate={{ scale: [1, 1.2, 1] }}
                         transition={{ duration: 0.8, repeat: Infinity, delay: 0.4 }}
                       />
@@ -1582,32 +1547,29 @@ Related Links:
                   </div>
 
                   {/* Skeleton Content */}
-                  <div className={`pl-4 border-l-2 ${
-                    isDarkMode ? 'border-green-400/30' : 'border-green-600/30'
-                  }`}>
+                  <div className={`pl-4 border-l-2 ${isDarkMode ? 'border-green-400/30' : 'border-green-600/30'
+                    }`}>
                     <SkeletonLoader variant="message" />
                   </div>
                 </motion.div>
               )}
             </AnimatePresence>
 
-              <div ref={messagesEndRef} />
-            </div>
+            <div ref={messagesEndRef} />
           </div>
-        </motion.div>
+        </div>
+      </motion.div>
 
       {/* Input Area - Outside sidebar margin so border extends full width */}
-      <motion.div 
-        className={`${
-          isDarkMode ? 'bg-[#282a36]' : 'bg-white'
-        } border-t ${
-          isDarkMode ? 'border-gray-700/50' : 'border-gray-200'
-        }`}
+      <motion.div
+        className={`${isDarkMode ? 'bg-[#282a36]' : 'bg-white'
+          } border-t ${isDarkMode ? 'border-gray-700/50' : 'border-gray-200'
+          }`}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.2 }}
       >
-        <motion.div 
+        <motion.div
           className="w-full"
           animate={{
             paddingLeft: isSidebarOpen ? "16rem" : "4rem",
@@ -1623,17 +1585,17 @@ Related Links:
         >
           <div className="max-w-4xl mx-auto">
             <ChatInput
-                value={inputValue}
+              value={inputValue}
               onChange={setInputValue}
               onSubmit={handleSubmit}
-                placeholder={currentThread ? "Continue the conversation..." : "Start a new conversation..."}
-                disabled={isGenerating}
+              placeholder={currentThread ? "Continue the conversation..." : "Start a new conversation..."}
+              disabled={isGenerating}
               isGenerating={isGenerating}
               variant="default"
               showModeSelector={true}
               className=""
             />
-            </div>
+          </div>
         </motion.div>
       </motion.div>
 

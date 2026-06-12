@@ -93,11 +93,16 @@ class GraphRAGAgent(BaseAgent):
                 user_id=user_id,
                 n_results=n_results
             )
-            
             # Format sources for consistency
             sources = result.get("sources", [])
             formatted_sources = []
+
             for source in sources:
+                logger.info(
+                    f"DOC={source.get('document_title')} "
+                    f"RELEVANCE={source.get('relevance',0)}"
+                )
+
                 formatted_sources.append({
                     "document_title": source.get("document_title", "Unknown"),
                     "content": source.get("content", ""),
@@ -106,14 +111,34 @@ class GraphRAGAgent(BaseAgent):
                     "file_path": source.get("file_path", ""),
                     "download_url": source.get("download_url", "")
                 })
-            
+
+            # =====================================================
+            # ADD THIS BLOCK HERE
+            # =====================================================
+
+            RELEVANCE_THRESHOLD = 0.60
+
+            filtered_sources = [
+                s for s in formatted_sources
+                if s.get("relevance", 0.0) >= RELEVANCE_THRESHOLD
+            ]
+
+            logger.info(
+                f"Original sources: {len(formatted_sources)}, "
+                f"Filtered sources: {len(filtered_sources)}"
+            )
+
+            # =====================================================
+            # END OF NEW BLOCK
+            # =====================================================
+
             return {
                 "context": result.get("context", ""),
-                "sources": formatted_sources,
-                "source_found": result.get("source_found", False),
+                "sources": filtered_sources,
+                "source_found": len(filtered_sources) > 0,
                 "search_time": result.get("search_time", 0.0),
                 "mode": mode,
-                "n_results": len(formatted_sources)
+                "n_results": len(filtered_sources)
             }
             
         except Exception as e:
