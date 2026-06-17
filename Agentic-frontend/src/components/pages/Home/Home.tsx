@@ -40,10 +40,10 @@ const Home: React.FC = () => {
     try {
       const threadTitle = message.substring(0, 50) + (message.length > 50 ? '...' : '');
       const response = await chatApi.createNewThread(threadTitle, user.id, selectedSpace?.id);
-      
+
       if (response.data && (response.status === 200 || response.status === 201)) {
         const apiThread = response.data;
-        
+
         // Create a new thread for local storage (backward compatibility)
         const threads = JSON.parse(localStorage.getItem('threads') || '[]');
         const newThread = {
@@ -60,7 +60,7 @@ const Home: React.FC = () => {
             responseMode: responseMode
           }]
         };
-        
+
         threads.unshift(newThread);
         localStorage.setItem('threads', JSON.stringify(threads));
 
@@ -130,8 +130,9 @@ const Home: React.FC = () => {
 
   return (
     <>
-      <motion.div 
-        className={`fixed inset-0 ${isDarkMode ? 'bg-[#282a36]' : 'bg-white'} overflow-y-auto`}
+      <motion.div
+        className={`fixed inset-0 overflow-y-auto ${isDarkMode ? 'bg-[#282a36]' : ''
+          }`}
         animate={{
           marginLeft: sidebarOpen ? "16rem" : "4rem",
         }}
@@ -141,10 +142,27 @@ const Home: React.FC = () => {
           damping: 30,
         }}
         style={{
+          ...(!isDarkMode
+            ? {
+              background:
+                "linear-gradient(135deg,#f8f3ef 0%,#f3eef9 55%,#eef2ff 100%)",
+            }
+            : {}),
           marginLeft: typeof window !== 'undefined' && window.innerWidth < 768 ? '0rem' : undefined
         }}
       >
         <div className="relative z-10 h-full flex flex-col">
+          {!isDarkMode && (
+            <>
+              <div
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  background:
+                    "radial-gradient(circle at 20% 30%, rgba(139,92,246,0.12), transparent 40%), radial-gradient(circle at 80% 20%, rgba(59,130,246,0.08), transparent 35%)",
+                }}
+              />
+            </>
+          )}
           {/* Main Content */}
           <div className="flex-1 px-4 py-6 overflow-y-auto">
             {/* Welcome Section */}
@@ -154,14 +172,14 @@ const Home: React.FC = () => {
               transition={{ duration: 0.6 }}
               className="text-center mb-8"
             >
-              <h1 className={`text-3xl md:text-4xl font-bold mb-3 ${
-                isDarkMode ? 'text-gray-100' : 'text-gray-900'
-              }`}>
+              <h1 className={`text-3xl md:text-4xl font-bold mb-3 ${isDarkMode
+                ? 'text-gray-100'
+                : 'bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent'
+                }`}>
                 Welcome to CogniVox
               </h1>
-              <p className={`text-base ${
-                isDarkMode ? 'text-gray-400' : 'text-gray-600'
-              }`}>
+              <p className={`text-base ${isDarkMode ? 'text-gray-400' : 'text-[#4a4f7a]'
+                }`}>
                 Your intelligent conversation companion
               </p>
             </motion.div>
@@ -173,7 +191,7 @@ const Home: React.FC = () => {
                   key={card.id}
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  whileHover={{ 
+                  whileHover={{
                     scale: 1.02,
                     y: -2
                   }}
@@ -181,11 +199,10 @@ const Home: React.FC = () => {
                   onHoverStart={() => setHoveredCard(card.id)}
                   onHoverEnd={() => setHoveredCard(null)}
                   onClick={() => card.onClick ? card.onClick() : navigate(card.path)}
-                  className={`group relative overflow-hidden rounded-xl cursor-pointer transition-all duration-300 ${
-                    isDarkMode 
-                      ? 'bg-[#44475a] hover:bg-[#44475a]/80 border border-gray-700/50 hover:border-gray-600/70' 
-                      : 'bg-white hover:bg-gray-50 border border-gray-200 hover:border-gray-300'
-                  } hover:shadow-lg`}
+                  className={`group relative overflow-hidden rounded-xl cursor-pointer transition-all duration-300 ${isDarkMode
+                    ? 'bg-[#44475a] hover:bg-[#44475a]/80 border border-gray-700/50 hover:border-gray-600/70'
+                    : 'bg-white/80 backdrop-blur-md border border-white/50 hover:border-purple-200'
+                    } shadow-lg shadow-purple-100/30 hover:shadow-xl`}
                 >
                   <div className="p-4">
                     {/* Icon */}
@@ -194,14 +211,14 @@ const Home: React.FC = () => {
                     </div>
 
                     {/* Content */}
-                    <h3 className={`text-base font-semibold mb-2 ${
-                      isDarkMode ? 'text-gray-100' : 'text-gray-900'
-                    }`}>
+                    <h3 className={`text-base font-semibold mb-2 ${isDarkMode
+                      ? 'text-gray-100'
+                      : 'bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent'
+                      }`}>
                       {card.title}
                     </h3>
-                    <p className={`text-sm ${
-                      isDarkMode ? 'text-gray-400' : 'text-gray-600'
-                    }`}>
+                    <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-[#4a4f7a]'
+                      }`}>
                       {card.description}
                     </p>
                   </div>
@@ -211,12 +228,12 @@ const Home: React.FC = () => {
           </div>
 
           {/* Compact Prompt Input */}
-          <motion.div 
-            className={`${
-              isDarkMode ? 'bg-[#282a36]' : 'bg-white'
-            } border-t ${
-              isDarkMode ? 'border-gray-800/50' : 'border-gray-100'
-            }`}
+          <motion.div
+            className={`${isDarkMode
+              ? 'bg-[#282a36]'
+              : 'bg-white/50 backdrop-blur-md'
+              } border-t ${isDarkMode ? 'border-gray-800/50' : 'border-gray-100'
+              }`}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.2 }}
@@ -225,13 +242,13 @@ const Home: React.FC = () => {
               <ChatInput
                 value={promptInput}
                 onChange={setPromptInput}
-              onSubmit={handlePromptSubmit}
-                  placeholder="What would you like to explore today?"
+                onSubmit={handlePromptSubmit}
+                placeholder="What would you like to explore today?"
                 variant="compact"
                 showModeSelector={true}
                 className="border-none"
               />
-              </div>
+            </div>
           </motion.div>
         </div>
       </motion.div>

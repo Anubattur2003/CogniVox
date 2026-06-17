@@ -117,8 +117,8 @@ class HasModelAccess(permissions.BasePermission):
             model_id = view.kwargs['model_id']
         elif request.data and 'model_id' in request.data:
             model_id = request.data['model_id']
-        elif request.query_params and 'model_id' in request.query_params:
-            model_id = request.query_params['model_id']
+        elif request.GET and 'model_id' in request.GET:
+            model_id = request.GET['model_id']
         
         if not model_id:
             return True  # Let the view handle model validation

@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../../contexts/ThemeContext';
-import { 
-  FaRocket, 
-  FaBrain, 
-  FaSearch, 
-  FaShieldAlt, 
-  FaBolt, 
-  FaUsers, 
-  FaChartLine, 
-  FaCode, 
-  FaStar, 
+import {
+  FaRocket,
+  FaBrain,
+  FaSearch,
+  FaShieldAlt,
+  FaBolt,
+  FaUsers,
+  FaChartLine,
+  FaCode,
+  FaStar,
   FaArrowRight,
   FaPlay,
   FaCheckCircle,
@@ -59,7 +59,7 @@ const LandingPage: React.FC = () => {
       icon: <FaRocket className="w-4 h-4" />,
       suggestions: [
         "Analyze PDF documents",
-        "Extract text from images", 
+        "Extract text from images",
         "Process legal contracts",
         "Summarize research papers"
       ]
@@ -85,7 +85,7 @@ const LandingPage: React.FC = () => {
       ]
     },
     {
-      title: "Search & Memory", 
+      title: "Search & Memory",
       icon: <FaSearch className="w-4 h-4" />,
       suggestions: [
         "Semantic search documents",
@@ -212,7 +212,7 @@ const LandingPage: React.FC = () => {
   ];
 
   return (
-    <div className={`min-h-screen ${isDarkMode ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-100' : 'bg-gradient-to-br from-gray-50 via-white to-gray-50 text-gray-900'}`}>
+    <div className={`min-h-screen ${isDarkMode ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-100' : 'bg-[#f8f5ff] text-gray-900'}`}>
       {/* Navigation */}
       <nav className={`fixed top-0 left-0 right-0 z-50 ${isDarkMode ? 'bg-gray-900/80' : 'bg-white/80'} backdrop-blur-lg border-b ${isDarkMode ? 'border-gray-800' : 'border-gray-200'}`}>
         <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 flex justify-between items-center">
@@ -229,8 +229,8 @@ const LandingPage: React.FC = () => {
               CogniVox
             </h1>
           </motion.div>
-          
-          <motion.div 
+
+          <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
@@ -238,11 +238,10 @@ const LandingPage: React.FC = () => {
           >
             <button
               onClick={() => handleAuth('signin')}
-              className={`px-6 py-2 rounded-lg transition-all duration-200 ${
-                isDarkMode 
-                  ? 'hover:bg-gray-800 text-gray-100 border border-gray-700 hover:border-gray-600' 
-                  : 'hover:bg-gray-100 text-gray-900 border border-gray-200 hover:border-gray-300'
-              }`}
+              className={`px-6 py-2 rounded-lg transition-all duration-200 ${isDarkMode
+                ? 'hover:bg-gray-800 text-gray-100 border border-gray-700 hover:border-gray-600'
+                : 'hover:bg-gray-100 text-gray-900 border border-gray-200 hover:border-gray-300'
+                }`}
             >
               Sign In
             </button>
@@ -258,23 +257,44 @@ const LandingPage: React.FC = () => {
 
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center px-4 md:px-6 pt-24 pb-16 overflow-hidden">
+
+        {!isDarkMode && (
+          <div
+            className="absolute inset-0"
+            style={{
+              background: `
+                radial-gradient(circle at 20% 20%, rgba(139,92,246,0.08), transparent 40%),
+                radial-gradient(circle at 80% 30%, rgba(59,130,246,0.08), transparent 40%),
+                linear-gradient(
+                  180deg,
+                  #fdfcff 0%,
+                  #f8f5ff 50%,
+                  #f3ecff 100%
+                )
+              `
+            }}
+          />
+        )}
+
         {/* Beautiful Star Field Background covering complete hero section */}
-        <StarField 
-          className="w-full h-full"
-          width="100%"
-          height="100%"
-        />
-        
+        {isDarkMode && (
+          <StarField
+            className="w-full h-full"
+            width="100%"
+            height="100%"
+          />
+        )}
+
         {/* Interactive Earth Globe - Bottom Right */}
         <div className="absolute bottom-10 right-10 w-[300px] h-[300px] md:w-[400px] md:h-[400px] lg:w-[500px] lg:h-[500px] z-10">
-          <EarthGlobe 
-            className="opacity-80 hover:opacity-100 transition-all duration-1000"
+          <EarthGlobe
+            className="opacity-90 hover:opacity-100 transition-all duration-1000"
             width="100%"
             height="100%"
             showBackground={false}
             showStars={false}
             showSun={true}
-            showMoon={true}
+            showMoon={false}
             showSatellites={false}
             showInfo={false}
             showGlobe={true}
@@ -285,7 +305,7 @@ const LandingPage: React.FC = () => {
             lockPosition={false}
             maxDistance={15}
             minDistance={5}
-            cameraPosition={[4, 2, 8]}
+            cameraPosition={[3, 2, 6]}
           />
         </div>
 
@@ -305,8 +325,11 @@ const LandingPage: React.FC = () => {
                 CogniVox
               </span>
             </h1>
-            
-            <p className="text-2xl md:text-3xl mb-16 font-light tracking-wide text-white">
+
+            <p
+              className={`text-2xl md:text-3xl mb-16 font-light tracking-wide ${isDarkMode ? 'text-white' : 'text-gray-700'
+                }`}
+            >
               AI-powered knowledge intelligence
             </p>
           </motion.div>
@@ -328,7 +351,10 @@ const LandingPage: React.FC = () => {
             >
               <form onSubmit={handleInputSubmit} className="p-1">
                 <div className="flex items-center gap-4 px-6 py-3">
-                  <FaSearch className="w-5 h-5 text-white/70" />
+                  <FaSearch
+                    className={`w-5 h-5 ${isDarkMode ? 'text-white/70' : 'text-gray-800'
+                      }`}
+                  />
                   <input
                     type="text"
                     value={inputValue}
@@ -336,20 +362,22 @@ const LandingPage: React.FC = () => {
                     onFocus={() => setIsInputFocused(true)}
                     onBlur={() => setIsInputFocused(false)}
                     placeholder="Ask anything about your documents..."
-                    className="flex-1 text-lg bg-transparent text-white placeholder-white/60 focus:outline-none"
+                    className={`flex-1 text-lg bg-transparent focus:outline-none ${isDarkMode
+                      ? 'text-white placeholder-white/60'
+                      : 'text-black placeholder:text-black'
+                      }`}
                   />
                   <motion.button
                     type="submit"
                     disabled={!inputValue.trim()}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className={`px-4 py-2 rounded-lg transition-all duration-200 ${
-                      inputValue.trim()
-                        ? 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg'
-                        : isDarkMode
-                          ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
-                          : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                    }`}
+                    className={`px-4 py-2 rounded-lg transition-all duration-200 ${inputValue.trim()
+                      ? 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg'
+                      : isDarkMode
+                        ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
+                        : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                      }`}
                   >
                     <FaArrowRight className="w-4 h-4" />
                   </motion.button>
@@ -358,7 +386,7 @@ const LandingPage: React.FC = () => {
             </MagicCard>
 
             {/* Floating Suggestion Pills */}
-          <motion.div
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
@@ -375,14 +403,23 @@ const LandingPage: React.FC = () => {
                 <motion.button
                   key={suggestion.text}
                   initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
+                  animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.5 + index * 0.05 }}
                   whileHover={{ scale: 1.05, y: -2 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => handleSuggestionClick(suggestion.text)}
-                  className="px-4 py-2 rounded-full text-sm transition-all duration-200 flex items-center gap-2 bg-white/10 text-white hover:bg-white/20 hover:text-white border border-white/20 backdrop-blur-sm shadow-lg hover:shadow-xl"
+                  className={`px-4 py-2 rounded-full text-sm transition-all duration-200 flex items-center gap-2
+                    ${isDarkMode
+                      ? 'bg-white/10 text-white hover:bg-white/20 border border-white/20'
+                      : 'bg-white text-gray-800 hover:bg-gray-50 border border-gray-200 shadow-md'
+                    }`}
                 >
-                  <span className="p-1 rounded bg-white/20">
+                  <span
+                    className={`p-1 rounded ${isDarkMode
+                      ? 'bg-white/20'
+                      : 'bg-purple-50 text-indigo-600'
+                      }`}
+                  >
                     {suggestion.icon}
                   </span>
                   {suggestion.text}
@@ -400,7 +437,8 @@ const LandingPage: React.FC = () => {
                   transition={{ duration: 0.2 }}
                   className="mt-3 p-3 rounded-xl backdrop-blur-xl bg-white/10 border border-white/20"
                 >
-                  <div className="text-xs font-medium mb-2 text-white/70">
+                  <div className={`text-xs font-medium mb-2 ${isDarkMode ? 'text-white/70' : 'text-indigo-600'
+                    }`}>
                     Suggestions based on "{inputValue}"
                   </div>
                   <div className="flex flex-wrap gap-2">
@@ -420,12 +458,22 @@ const LandingPage: React.FC = () => {
                         {suggestion}
                       </motion.button>
                     ))}
-            </div>
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>
           </motion.div>
         </div>
+        {!isDarkMode && (
+          <div className="absolute bottom-[-2px] left-0 right-0 overflow-hidden z-0">
+            <svg viewBox="0 0 1440 320" className="w-full">
+              <path
+                fill="#e9ddff"
+                d="M0,224L60,218.7C120,213,240,203,360,208C480,213,600,235,720,240C840,245,960,235,1080,218.7C1200,203,1320,181,1380,170.7L1440,160L1440,320L0,320Z"
+              />
+            </svg>
+          </div>
+        )}
       </section>
 
       {/* Services Section */}
@@ -452,7 +500,7 @@ const LandingPage: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {services.map((service, index) => (
-              <motion.div 
+              <motion.div
                 key={service.title}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -477,7 +525,7 @@ const LandingPage: React.FC = () => {
       {/* Business Benefits Section */}
       <section className={`px-4 md:px-6 py-20 ${isDarkMode ? 'bg-gray-800/30' : 'bg-gray-50'}`}>
         <div className="max-w-7xl mx-auto">
-              <motion.div
+          <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
@@ -494,7 +542,7 @@ const LandingPage: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {businessBenefits.map((benefit, index) => (
-              <motion.div 
+              <motion.div
                 key={benefit.label}
                 initial={{ opacity: 0, scale: 0.9 }}
                 whileInView={{ opacity: 1, scale: 1 }}
@@ -518,7 +566,7 @@ const LandingPage: React.FC = () => {
       {/* Technology Stack Section */}
       <section className="px-4 md:px-6 py-20">
         <div className="max-w-7xl mx-auto">
-              <motion.div
+          <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
@@ -545,7 +593,7 @@ const LandingPage: React.FC = () => {
                 className={`p-4 rounded-lg ${isDarkMode ? 'bg-gray-800/30 border-gray-700' : 'bg-white border-gray-200'} border text-center`}
               >
                 <div className="font-semibold text-sm mb-1">{tech.name}</div>
-                <div className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                <div className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-indigo-600'}`}>
                   {tech.category}
                 </div>
               </motion.div>
@@ -583,11 +631,10 @@ const LandingPage: React.FC = () => {
                 <FaArrowRight className="inline ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </button>
               <button
-                className={`px-8 py-4 border-2 rounded-lg font-semibold text-lg transition-all duration-200 ${
-                  isDarkMode 
-                    ? 'border-gray-600 text-gray-200 hover:border-gray-500 hover:bg-gray-800' 
-                    : 'border-gray-300 text-gray-700 hover:border-gray-400 hover:bg-gray-50'
-                }`}
+                className={`px-8 py-4 border-2 rounded-lg font-semibold text-lg transition-all duration-200 ${isDarkMode
+                  ? 'border-gray-600 text-gray-200 hover:border-gray-500 hover:bg-gray-800'
+                  : 'border-gray-300 text-gray-700 hover:border-gray-400 hover:bg-gray-50'
+                  }`}
               >
                 Contact Sales
               </button>

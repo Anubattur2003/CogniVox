@@ -249,12 +249,12 @@ class MCPToolViewSet(viewsets.ReadOnlyModelViewSet):
             logger.info(f"MCP Tools: Filtered {initial_count - filtered_count} tools from inactive/disconnected servers. Returning {filtered_count} tools from active/connected servers.")
         
         # Filter by server if specified
-        server_id = self.request.query_params.get('server_id')
+        server_id = self.request.GET.get('server_id')
         if server_id:
             queryset = queryset.filter(server_config_id=server_id)
         
         # Filter by enabled status
-        is_enabled = self.request.query_params.get('is_enabled')
+        is_enabled = self.request.GET.get('is_enabled')
         if is_enabled is not None:
             queryset = queryset.filter(is_enabled=is_enabled.lower() == 'true')
         
@@ -408,7 +408,7 @@ class MCPResourceViewSet(viewsets.ReadOnlyModelViewSet):
             logger.info(f"MCP Resources: Filtered {initial_count - filtered_count} resources from inactive/disconnected servers. Returning {filtered_count} resources from active/connected servers.")
         
         # Filter by server if specified
-        server_id = self.request.query_params.get('server_id')
+        server_id = self.request.GET.get('server_id')
         if server_id:
             queryset = queryset.filter(server_config_id=server_id)
         
@@ -487,7 +487,7 @@ class MCPPromptViewSet(viewsets.ReadOnlyModelViewSet):
             logger.info(f"MCP Prompts: Filtered {initial_count - filtered_count} prompts from inactive/disconnected servers. Returning {filtered_count} prompts from active/connected servers.")
         
         # Filter by server if specified
-        server_id = self.request.query_params.get('server_id')
+        server_id = self.request.GET.get('server_id')
         if server_id:
             queryset = queryset.filter(server_config_id=server_id)
         
@@ -557,17 +557,17 @@ class MCPExecutionLogViewSet(viewsets.ReadOnlyModelViewSet):
         ).select_related('user', 'tool')
         
         # Filter by status
-        status_filter = self.request.query_params.get('status')
+        status_filter = self.request.GET.get('status')
         if status_filter:
             queryset = queryset.filter(status=status_filter)
         
         # Filter by tool
-        tool_id = self.request.query_params.get('tool_id')
+        tool_id = self.request.GET.get('tool_id')
         if tool_id:
             queryset = queryset.filter(tool_id=tool_id)
         
         # Filter by chat thread
-        chat_thread_id = self.request.query_params.get('chat_thread_id')
+        chat_thread_id = self.request.GET.get('chat_thread_id')
         if chat_thread_id:
             queryset = queryset.filter(chat_thread_id=chat_thread_id)
         

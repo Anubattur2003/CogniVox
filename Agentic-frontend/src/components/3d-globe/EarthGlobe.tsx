@@ -6,17 +6,17 @@ import SatelliteTracker from './SatelliteTracker'
 import InfoPanel from './InfoPanel'
 
 // Custom OrbitControls component that respects lockPosition
-function CustomOrbitControls({ 
-  enablePan, 
-  enableZoom, 
-  maxDistance, 
-  minDistance, 
-  autoRotate, 
-  autoRotateSpeed, 
-  enableDamping, 
+function CustomOrbitControls({
+  enablePan,
+  enableZoom,
+  maxDistance,
+  minDistance,
+  autoRotate,
+  autoRotateSpeed,
+  enableDamping,
   dampingFactor,
   lockPosition = false,
-  cameraPosition 
+  cameraPosition
 }: {
   enablePan?: boolean
   enableZoom?: boolean
@@ -31,7 +31,7 @@ function CustomOrbitControls({
 }) {
   const { camera } = useThree()
   const controlsRef = useRef<any>()
-  
+
   useEffect(() => {
     if (cameraPosition) {
       camera.position.set(cameraPosition[0], cameraPosition[1], cameraPosition[2])
@@ -91,11 +91,11 @@ export interface EarthComponentProps {
 function Earth({ showSun = true, showMoon = true, showSatellites = true }: EarthComponentProps) {
   const earthGroupRef = useRef<THREE.Group>(null)
   const [isUserInteracting, setIsUserInteracting] = useState(false)
-  
+
   // Use working Earth texture URLs including night lights
   const [colorMap, normalMap, specularMap, cloudsMap, nightMap] = useLoader(THREE.TextureLoader, [
     'https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg',
-    'https://threejs.org/examples/textures/planets/earth_normal_2048.jpg', 
+    'https://threejs.org/examples/textures/planets/earth_normal_2048.jpg',
     'https://threejs.org/examples/textures/planets/earth_specular_2048.jpg',
     'https://threejs.org/examples/textures/planets/earth_clouds_1024.png',
     'https://threejs.org/examples/textures/planets/earth_lights_2048.png'
@@ -114,7 +114,7 @@ function Earth({ showSun = true, showMoon = true, showSatellites = true }: Earth
         // When not interacting, show accurate Earth rotation with gentle auto-rotation
         const accurateRotation = getAccurateEarthRotation()
         const visualRotation = state.clock.getElapsedTime() * 0.05 // Slower visual rotation
-        
+
         // Apply both rotations: accurate time-based + gentle visual auto-rotation
         earthGroupRef.current.rotation.y = accurateRotation + visualRotation
       }
@@ -151,19 +151,19 @@ function Earth({ showSun = true, showMoon = true, showSatellites = true }: Earth
             color="#ffffff"
           />
         </mesh>
-        
+
         {/* Night side with city lights - rotates with Earth */}
         <mesh position={[0, 0, 0]}>
           <sphereGeometry args={[2.001, 64, 64]} />
           <meshBasicMaterial
             map={nightMap}
             transparent
-            opacity={1.0}
+            opacity={0}
             blending={THREE.AdditiveBlending}
             color="#ffcc66"
           />
         </mesh>
-        
+
         {/* Clouds Layer - rotates with Earth */}
         <mesh position={[0, 0, 0]}>
           <sphereGeometry args={[2.01, 64, 64]} />
@@ -176,14 +176,14 @@ function Earth({ showSun = true, showMoon = true, showSatellites = true }: Earth
           />
         </mesh>
       </group>
-      
+
       {/* Atmosphere Glow - doesn't rotate */}
       <mesh position={[0, 0, 0]}>
-        <sphereGeometry args={[2.05, 64, 64]} />
+        <sphereGeometry args={[2.15, 64, 64]} />
         <meshPhongMaterial
           color="#87CEEB"
           transparent
-          opacity={0.1}
+          opacity={0.25}
           side={THREE.BackSide}
         />
       </mesh>
@@ -199,25 +199,25 @@ function Earth({ showSun = true, showMoon = true, showSatellites = true }: Earth
 // Moon component with realistic orbital motion that's visible from any angle
 function Moon() {
   const moonRef = useRef<THREE.Mesh>(null)
-  
+
   // Load moon texture from Three.js examples
-  const moonTexture = useLoader(THREE.TextureLoader, 
+  const moonTexture = useLoader(THREE.TextureLoader,
     'https://threejs.org/examples/textures/planets/moon_1024.jpg'
   )
-  
+
   useFrame((state) => {
     if (moonRef.current) {
       // Moon orbiting around Earth with consistent motion
       const time = state.clock.getElapsedTime()
       const orbitRadius = 12
       const orbitSpeed = 0.03 // Slower, more realistic speed
-      
+
       // Consistent orbital motion that looks good from any camera angle
       const moonAngle = time * orbitSpeed
       moonRef.current.position.x = Math.cos(moonAngle) * orbitRadius
       moonRef.current.position.z = Math.sin(moonAngle) * orbitRadius
       moonRef.current.position.y = Math.sin(moonAngle * 0.2) * 1.5 // Gentle vertical variation
-      
+
       // Moon rotation on its axis (tidally locked like real moon)
       moonRef.current.rotation.y = moonAngle // Same as orbital period
       moonRef.current.rotation.x += 0.001
@@ -227,7 +227,7 @@ function Moon() {
   return (
     <mesh ref={moonRef}>
       <sphereGeometry args={[0.35, 32, 32]} />
-      <meshPhongMaterial 
+      <meshPhongMaterial
         map={moonTexture}
         shininess={5}
         specular={new THREE.Color(0x222222)}
@@ -239,16 +239,16 @@ function Moon() {
 // Fixed sun position - sun doesn't move, only Earth rotates
 function getFixedSunPosition() {
   const now = new Date()
-  
+
   // Calculate sun's declination (changes with seasons)
   const dayOfYear = Math.floor((now.getTime() - new Date(now.getFullYear(), 0, 0).getTime()) / (1000 * 60 * 60 * 24))
   const sunDeclination = 23.45 * Math.sin(Math.PI * 2 * (dayOfYear - 81) / 365)
-  
+
   // Sun position: always points from the side (like solar noon at Greenwich)
   // This creates a proper day/night terminator
   const phi = (90 - sunDeclination) * (Math.PI / 180)
   const theta = 0 // Fixed position - sun always "points" from the right side
-  
+
   const x = Math.sin(phi) * Math.cos(theta) * 20  // Far away, like real sun
   const z = Math.sin(phi) * Math.sin(theta) * 20
   const y = Math.cos(phi) * 20
@@ -260,39 +260,39 @@ function getFixedSunPosition() {
 function getAccurateEarthRotation() {
   const now = new Date()
   const utcHours = now.getUTCHours() + now.getUTCMinutes() / 60 + now.getUTCSeconds() / 3600
-  
+
   // Earth rotates 360° in 24 hours = 15° per hour
   // At UTC 12:00 (noon), Greenwich (0° longitude) should face the sun directly
   // Current implementation: rotate Earth so that the meridian facing the sun 
   // corresponds to where it should be at this UTC time
   const earthRotationAngle = -(utcHours * 15 - 0) * (Math.PI / 180)
-  
+
   return earthRotationAngle
 }
 
 // Sun indicator component positioned accurately relative to lighting direction
 function SunIndicator() {
   const sunRef = useRef<THREE.Mesh>(null)
-  
+
   useFrame((state) => {
     if (sunRef.current) {
       // Get the accurate sun position for lighting
       const accurateSunPosition = getFixedSunPosition()
-      
+
       // Position visual sun indicator at the actual light source direction
       // This ensures it always appears where the sunlight is coming from
       sunRef.current.position.set(
         accurateSunPosition[0],
-        accurateSunPosition[1], 
+        accurateSunPosition[1],
         accurateSunPosition[2]
       )
-      
+
       // Sun rotation on its axis for visual appeal
       sunRef.current.rotation.y += 0.01
       sunRef.current.rotation.x += 0.005
     }
   })
-  
+
   return (
     <mesh ref={sunRef}>
       <sphereGeometry args={[0.25, 16, 16]} />
@@ -308,23 +308,23 @@ function SunIndicator() {
 function Lighting() {
   const lightRef = useRef<THREE.DirectionalLight>(null)
   const fixedSunPosition = getFixedSunPosition() // Sun never moves position in space for accurate lighting
-  
+
   useFrame(() => {
     if (lightRef.current) {
       lightRef.current.position.set(fixedSunPosition[0], fixedSunPosition[1], fixedSunPosition[2])
     }
   })
-  
+
   const sunPosition = fixedSunPosition
-  
+
   return (
     <>
       {/* Main sun light - creates day/night terminator */}
       <directionalLight
         ref={lightRef}
         position={sunPosition}
-        intensity={5.0}
-        color="#fff8e1"
+        intensity={2.5}
+        color="#ffffff"
         castShadow
         shadow-mapSize-width={4096}
         shadow-mapSize-height={4096}
@@ -336,7 +336,8 @@ function Lighting() {
         shadow-camera-bottom={-15}
       />
       {/* Very minimal ambient light - makes night side visible but dark */}
-      <ambientLight intensity={0.02} color="#1a1a3a" />
+      <ambientLight intensity={2.2} color="#ffffff" />
+      <directionalLight position={[3, 2, 6]} intensity={1.5} color="#fff8f0" />
     </>
   )
 }
@@ -353,7 +354,7 @@ const EarthGlobe: React.FC<EarthGlobeProps> = ({
   className = "",
   width = "100%",
   height = "100%",
-  cameraPosition = [3, 2, 6],
+  cameraPosition = [2, 1, 4],
   autoRotate = true,
   autoRotateSpeed = 0.2,
   enableZoom = true,
@@ -372,9 +373,9 @@ const EarthGlobe: React.FC<EarthGlobeProps> = ({
     <div className={`${showBackground ? 'stars-bg' : ''} ${className}`} style={containerStyle}>
       {showGlobe && (
         <Canvas
-          camera={{ 
+          camera={{
             position: cameraPosition,
-            fov: 45 
+            fov: 45
           }}
           style={{ background: 'transparent' }}
           onCreated={({ gl, camera }) => {
@@ -384,7 +385,7 @@ const EarthGlobe: React.FC<EarthGlobeProps> = ({
         >
           {/* Lighting */}
           <Lighting />
-          
+
           {/* Stars background */}
           {showStars && (
             <Stars
@@ -396,14 +397,14 @@ const EarthGlobe: React.FC<EarthGlobeProps> = ({
               fade
             />
           )}
-          
+
           {/* Earth */}
-          <Earth 
+          <Earth
             showSun={showSun}
             showMoon={showMoon}
             showSatellites={showSatellites}
           />
-          
+
           {/* Controls */}
           <CustomOrbitControls
             enablePan={enablePan}
@@ -419,7 +420,7 @@ const EarthGlobe: React.FC<EarthGlobeProps> = ({
           />
         </Canvas>
       )}
-      
+
       {/* Info Panel */}
       {showInfo && <InfoPanel />}
     </div>

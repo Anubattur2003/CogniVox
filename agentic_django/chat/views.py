@@ -297,7 +297,7 @@ class ChatThreadViewSet(viewsets.ModelViewSet):
         queryset = ChatThread.objects.filter(user=self.request.user).order_by('-updated_at')
         
         # Filter by space if provided
-        space_id = self.request.query_params.get('space_id', None)
+        space_id = self.request.GET.get('space_id', None)
         if space_id:
             if space_id == 'null' or space_id == 'none':
                 queryset = queryset.filter(space__isnull=True)
@@ -305,7 +305,7 @@ class ChatThreadViewSet(viewsets.ModelViewSet):
                 queryset = queryset.filter(space_id=space_id)
         
         # Filter by favorite if provided
-        is_favorite = self.request.query_params.get('is_favorite', None)
+        is_favorite = self.request.GET.get('is_favorite', None)
         if is_favorite is not None:
             queryset = queryset.filter(is_favorite=is_favorite.lower() == 'true')
         
@@ -347,7 +347,7 @@ class ChatThreadViewSet(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         """List chat threads with optional sub-thread inclusion."""
-        include_subthreads = request.query_params.get('subthread', 'true').lower() == 'true'
+        include_subthreads = request.GET.get('subthread', 'true').lower() == 'true'
         
         queryset = self.get_queryset()
         
@@ -784,7 +784,7 @@ def stream_message(request, task_id):
         user = request.user
     else:
         # 2. Try query parameter (used by browsers' native EventSource client)
-        token_param = request.query_params.get('token')
+        token_param = request.GET.get('token')
         if token_param:
             try:
                 validated_token = AccessToken(token_param)
